@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>StreetEnglish AI Pro</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        dark: {
+                            900: '#0a0a0c',
+                            800: '#121216',
+                            700: '#1c1c24',
+                            600: '#2a2a35'
+                        },
+                        neon: {
+                            green: '#00ff66',
+                            yellow: '#facc15',
+                            coral: '#ff4b4b'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #0a0a0c; color: #f3f4f6; }
+        .pulse-ring {
+            animation: pulse-ring 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+        }
+        @keyframes pulse-ring {
+            0% { transform: scale(0.95); opacity: 0.8; }
+            50% { transform: scale(1.15); opacity: 0.4; }
+            100% { transform: scale(0.95); opacity: 0.8; }
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: #121216; }
+        ::-webkit-scrollbar-thumb { background: #2a2a35; border-radius: 4px; }
+    </style>
+    <!-- PWA Manifest link -->
+    <link rel="manifest" href="manifest.json">
+</head>
+<body class="min-h-screen flex flex-col justify-between overflow-x-hidden selection:bg-neon-green selection:text-black">
+
+    <!-- Top Navigation Header -->
+    <header class="sticky top-0 z-50 bg-dark-800/90 backdrop-blur-md border-b border-dark-600 px-4 py-3 flex items-center justify-between">
+        <div class="flex items-center space-x-3">
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-neon-green to-emerald-600 flex items-center justify-center shadow-lg shadow-neon-green/20">
+                <i data-lucide="zap" class="w-6 h-6 text-black fill-black"></i>
+            </div>
+            <div>
+                <h1 class="font-bold text-base tracking-wide text-white flex items-center gap-1.5">
+                    StreetEnglish <span class="text-xs bg-neon-green/20 text-neon-green px-1.5 py-0.5 rounded font-mono uppercase">AI Pro</span>
+                </h1>
+                <p class="text-xs text-gray-400" id="header-stage-title">Stage 1: Street Icebreakers</p>
+            </div>
+        </div>
+        <div class="flex items-center space-x-2">
+            <button onclick="openSettings()" class="p-2 rounded-xl bg-dark-700 text-gray-300 hover:text-white hover:bg-dark-600 transition border border-dark-600" title="API Settings">
+                <i data-lucide="key" class="w-5 h-5"></i>
+            </button>
+            <button onclick="openStagesModal()" class="px-3 py-1.5 rounded-xl bg-dark-700 text-xs font-semibold text-neon-green border border-dark-600 hover:bg-dark-600 transition flex items-center gap-1.5">
+                <i data-lucide="layers" class="w-4 h-4"></i>
+                <span id="header-progress-text">1/5 Turns</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="flex-1 max-w-2xl w-full mx-auto p-4 flex flex-col pb-24">
+
+        <!-- Stage Banner / Coach Card -->
+        <section class="mb-4 bg-gradient-to-r from-dark-800 to-dark-700 border border-dark-600 rounded-2xl p-4 shadow-xl relative overflow-hidden">
+            <div class="absolute -right-10 -bottom-10 w-32 h-32 bg-neon-green/5 rounded-full blur-2xl pointer-events-none"></div>
+            <div class="flex items-start justify-between">
+                <div class="flex items-center space-x-3">
+                    <div class="w-12 h-12 rounded-full bg-dark-600 border-2 border-neon-green flex items-center justify-center text-xl font-bold text-neon-green shadow-inner">
+                        🧢
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <h2 class="font-bold text-white text-sm" id="coach-name">Coach Jax (US Street Pro)</h2>
+                            <span class="inline-flex items-center px-1.5 py-0.2 rounded-full text-[10px] font-medium bg-red-500/20 text-red-400 border border-red-500/30">Strict C1 Mode</span>
+                        </div>
+                        <p class="text-xs text-gray-400 mt-0.5" id="stage-desc">Mastering casual US greetings like 'What's good?', 'How's it going?'</p>
+                    </div>
+                </div>
+                <button onclick="playCoachIntro()" class="p-2 rounded-lg bg-dark-600 text-neon-green hover:bg-dark-500 transition" title="Listen to prompt">
+                    <i data-lucide="volume-2" class="w-5 h-5"></i>
+                </button>
+            </div>
+            
+            <!-- Stage Selector Pills -->
+            <div class="mt-4 pt-3 border-t border-dark-600/60 flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar" id="stage-pills">
+                <!-- Generated dynamically -->
+            </div>
+        </section>
+
+        <!-- Chat Conversation Flow -->
+        <div id="chat-container" class="flex-1 space-y-4 mb-4 flex flex-col">
+            <!-- Initial AI Greeting Message -->
+            <div class="flex items-start space-x-3 max-w-[85%]">
+                <div class="w-8 h-8 rounded-full bg-neon-green text-black font-bold flex items-center justify-center shrink-0 text-xs">AI</div>
+                <div class="bg-dark-800 border border-dark-600 rounded-2xl rounded-tl-sm p-4 text-sm text-gray-200 shadow-md">
+                    <p id="ai-greeting-text">Yo! Welcome to the streets. I'm Jax, your no-nonsense American English coach. No textbook boring grammar here—we talk real. Let's start with Stage 1: How do you casually greet someone you run into on the block? Hit me with a natural US greeting!</p>
+                    <div class="mt-3 flex items-center justify-between text-xs text-gray-400 border-t border-dark-700 pt-2">
+                        <span class="flex items-center gap-1 text-neon-green font-mono"><i data-lucide="sparkles" class="w-3.5 h-3.5"></i> Challenge #1</span>
+                        <button onclick="speakText(document.getElementById('ai-greeting-text').innerText)" class="hover:text-white flex items-center gap-1">
+                            <i data-lucide="volume-2" class="w-3.5 h-3.5"></i> Listen
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Evaluation Feedback Box (Hidden by default) -->
+        <div id="feedback-card" class="hidden mb-4 bg-dark-800 border-2 border-neon-green/40 rounded-2xl p-4 shadow-xl animate-fade-in">
+            <div class="flex items-center justify-between mb-2">
+                <span class="text-xs font-bold uppercase tracking-wider text-neon-green flex items-center gap-1">
+                    <i data-lucide="shield-check" class="w-4 h-4"></i> Coach Verdict & Breakdown
+                </span>
+                <span id="score-badge" class="px-2 py-0.5 rounded text-xs font-bold font-mono bg-neon-green/20 text-neon-green">Grade: C1</span>
+            </div>
+            <p id="feedback-critique" class="text-xs text-gray-300 mb-3"></p>
+            <div class="bg-dark-900 rounded-xl p-3 border border-dark-600 text-xs space-y-1.5">
+                <div class="text-gray-400 font-semibold uppercase text-[10px]">Street Upgrade Suggestion:</div>
+                <div id="feedback-suggestion" class="text-neon-green font-medium"></div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Bottom Fixed Input Dock -->
+    <footer class="fixed bottom-0 left-0 right-0 bg-dark-800/95 backdrop-blur-lg border-t border-dark-600 p-3 z-40">
+        <div class="max-w-2xl mx-auto flex items-center gap-2">
+            <!-- Voice Record Button -->
+            <button id="mic-btn" onclick="toggleSpeechRecognition()" class="w-12 h-12 rounded-2xl bg-dark-700 border border-dark-600 text-gray-300 hover:text-white flex items-center justify-center shrink-0 transition relative group" title="Hold or Click to Speak">
+                <i data-lucide="mic" class="w-5 h-5" id="mic-icon"></i>
+                <div id="mic-pulse" class="absolute inset-0 rounded-2xl border-2 border-neon-green pulse-ring hidden"></div>
+            </button>
+
+            <!-- Text Input -->
+            <div class="flex-1 relative flex items-center">
+                <input type="text" id="user-input" placeholder="Type or speak your street response..." class="w-full bg-dark-900 border border-dark-600 rounded-2xl px-4 py-3 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-neon-green transition pr-10">
+                <button onclick="sendUserAnswer()" class="absolute right-2 p-2 rounded-xl bg-neon-green text-black hover:bg-emerald-400 transition font-bold" title="Send Answer">
+                    <i data-lucide="send" class="w-4 h-4"></i>
+                </button>
+            </div>
+        </div>
+        <div class="max-w-2xl mx-auto mt-1.5 flex items-center justify-between text-[11px] text-gray-400 px-1">
+            <span id="speech-status">Mic Ready. Tap mic or type.</span>
+            <span class="text-neon-green font-mono">Gemini AI Street Core</span>
+        </div>
+    </footer>
+
+    <!-- Settings Modal -->
+    <div id="settings-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-dark-800 border border-dark-600 rounded-3xl max-w-md w-full p-6 shadow-2xl relative">
+            <button onclick="closeSettings()" class="absolute top-4 right-4 text-gray-400 hover:text-white">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+            <h3 class="text-lg font-bold text-white mb-2 flex items-center gap-2">
+                <i data-lucide="key" class="w-5 h-5 text-neon-green"></i> Gemini API Configuration
+            </h3>
+            <p class="text-xs text-gray-400 mb-4">Enter your Gemini API key to power the uncompromising street tutor agent. Stored securely in your browser's localStorage.</p>
+            <div class="space-y-3">
+                <div>
+                    <label class="block text-xs font-medium text-gray-300 mb-1">API Key</label>
+                    <input type="password" id="api-key-input" placeholder="AIzaSy..." class="w-full bg-dark-900 border border-dark-600 rounded-xl px-3 py-2.5 text-sm text-white focus:outline-none focus:border-neon-green">
+                </div>
+                <button onclick="saveApiKey()" class="w-full py-3 rounded-xl bg-neon-green text-black font-bold text-sm hover:bg-emerald-400 transition shadow-lg shadow-neon-green/20">
+                    Save & Initialize Coach
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stages Overview Modal -->
+    <div id="stages-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-dark-800 border border-dark-600 rounded-3xl max-w-lg w-full p-6 shadow-2xl relative max-h-[85vh] overflow-y-auto">
+            <button onclick="closeStagesModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+            <h3 class="text-lg font-bold text-white mb-1 flex items-center gap-2">
+                <i data-lucide="layers" class="w-5 h-5 text-neon-green"></i> Street English Mastery Curriculum
+            </h3>
+            <p class="text-xs text-gray-400 mb-4">Progress step-by-step from B1 conversational to C1 native street fluency.</p>
+            
+            <div class="space-y-3" id="stages-list-container">
+                <!-- Populated dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Application Script -->
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+
+        // Curriculum Definition (5 Stages)
+        const curriculum = [
+            {
+                id: 1,
+                title: "Street Icebreakers",
+                subtitle: "Greetings & Casual Openings",
+                desc: "Mastering casual US greetings like 'What's good?', 'How's it going?', 'What's up?', and smooth responses.",
+                goalTurns: 3
+            },
+            {
+                id: 2,
+                title: "Daily Hustle & Jobs",
+                subtitle: "Side Hustles, Work & Grind",
+                desc: "Talking about what people do, trades, offices, remote gigs, and daily grind using natural idioms.",
+                goalTurns: 3
+            },
+            {
+                id: 3,
+                title: "Past Stories & Memories",
+                subtitle: "Narrating Back in the Day",
+                desc: "Narrating past events using casual past tense contractions and storytelling fillers like 'so basically', 'back in the day'.",
+                goalTurns: 3
+            },
+            {
+                id: 4,
+                title: "Present Chaos & Routine",
+                subtitle: "Current Lifestyle & Setup",
+                desc: "Describing current setups, habits, living situations, and daily chaos without sounding like a textbook.",
+                goalTurns: 3
+            },
+            {
+                id: 5,
+                title: "Future Ambitions & C1 Fluency",
+                subtitle: "Hypotheticals & Big Moves",
+                desc: "Mastering hypothetical scenarios, future plans, and advanced native expressions for true C1 level mastery.",
+                goalTurns: 3
+            }
+        ];
+
+        // State Management
+        let currentStageId = 1;
+        let currentTurn = 1;
+        let apiKey = localStorage.getItem('gemini_api_key') || '';
+        let isListening = false;
+        let recognition = null;
+
+        // Initialize App
+        window.addEventListener('DOMContentLoaded', () => {
+            if (!apiKey) {
+                // Prompt or keep empty for built-in fallback / prompt
+            }
+            renderStagePills();
+            updateHeader();
+            setupSpeechRecognition();
+
+            // Enter key listener
+            document.getElementById('user-input').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') sendUserAnswer();
+            });
+        });
+
+        function openSettings() {
+            document.getElementById('api-key-input').value = apiKey;
+            document.getElementById('settings-modal').classList.remove('hidden');
+        }
+
+        function closeSettings() {
+            document.getElementById('settings-modal').classList.add('hidden');
+        }
+
+        function saveApiKey() {
+            apiKey = document.getElementById('api-key-input').value.trim();
+            localStorage.setItem('gemini_api_key', apiKey);
+            closeSettings();
+            showNotification("API Key saved successfully!");
+        }
+
+        function openStagesModal() {
+            const container = document.getElementById('stages-list-container');
+            container.innerHTML = '';
+            curriculum.forEach(stage => {
+                const isCurrent = stage.id === currentStageId;
+                const isCompleted = stage.id < currentStageId;
+                container.innerHTML += `
+                    <div class="p-4 rounded-2xl border ${isCurrent ? 'border-neon-green bg-neon-green/5' : 'border-dark-600 bg-dark-900'} flex items-center justify-between">
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <span class="w-6 h-6 rounded-full ${isCurrent ? 'bg-neon-green text-black' : 'bg-dark-700 text-gray-300'} text-xs font-bold flex items-center justify-center">${stage.id}</span>
+                                <h4 class="font-bold text-white text-sm">${stage.title}</h4>
+                            </div>
+                            <p class="text-xs text-gray-400 mt-1">${stage.desc}</p>
+                        </div>
+                        <div>
+                            ${isCompleted ? '<span class="text-xs text-neon-green font-bold">Completed</span>' : isCurrent ? '<span class="text-xs bg-neon-green/20 text-neon-green px-2 py-1 rounded font-bold">Active</span>' : '<span class="text-xs text-gray-500">Locked</span>'}
+                        </div>
+                    </div>
+                `;
+            });
+            document.getElementById('stages-modal').classList.remove('hidden');
+        }
+
+        function closeStagesModal() {
+            document.getElementById('stages-modal').classList.add('hidden');
+        }
+
+        function renderStagePills() {
+            const container = document.getElementById('stage-pills');
+            container.innerHTML = '';
+            curriculum.forEach(stage => {
+                const active = stage.id === currentStageId;
+                container.innerHTML += `
+                    <button onclick="switchStage(${stage.id})" class="px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition border ${active ? 'bg-neon-green text-black border-neon-green font-bold' : 'bg-dark-700 text-gray-300 border-dark-600 hover:bg-dark-600'}">
+                        Stage ${stage.id}: ${stage.title}
+                    </button>
+                `;
+            });
+        }
+
+        function switchStage(id) {
+            currentStageId = id;
+            currentTurn = 1;
+            updateHeader();
+            renderStagePills();
+            const stage = curriculum.find(s => s.id === id);
+            document.getElementById('stage-desc').innerText = stage.desc;
+            
+            // Add AI welcome for new stage
+            appendChatMessage("AI", `Alright, we've stepped into Stage ${stage.id}: ${stage.title}. ${stage.desc} Give me your best shot!`);
+        }
+
+        function updateHeader() {
+            const stage = curriculum.find(s => s.id === currentStageId);
+            document.getElementById('header-stage-title').innerText = `Stage ${stage.id}: ${stage.title}`;
+            document.getElementById('header-progress-text').innerText = `${currentTurn}/${stage.goalTurns} Turns`;
+        }
+
+        function speakText(text) {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'en-US';
+                utterance.rate = 1.0;
+                // Try to pick an American voice if available
+                const voices = window.speechSynthesis.getVoices();
+                const usVoice = voices.find(v => v.lang.includes('en-US') && (v.name.includes('Natural') || v.name.includes('Google') || v.name.includes('Samantha')));
+                if (usVoice) utterance.voice = usVoice;
+                window.speechSynthesis.speak(utterance);
+            }
+        }
+
+        function playCoachIntro() {
+            const lastAiMsg = document.querySelector('#chat-container > div:last-child p');
+            if (lastAiMsg) {
+                speakText(lastAiMsg.innerText);
+            }
+        }
+
+        function setupSpeechRecognition() {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (SpeechRecognition) {
+                recognition = new SpeechRecognition();
+                recognition.lang = 'en-US';
+                recognition.interimResults = false;
+                recognition.maxAlternatives = 1;
+
+                recognition.onstart = () => {
+                    isListening = true;
+                    document.getElementById('mic-pulse').classList.remove('hidden');
+                    document.getElementById('speech-status').innerText = "Listening to your street English...";
+                    document.getElementById('mic-btn').classList.add('border-neon-green');
+                };
+
+                recognition.onresult = (event) => {
+                    const speechResult = event.results[0][0].transcript;
+                    document.getElementById('user-input').value = speechResult;
+                    document.getElementById('speech-status').innerText = "Captured! Tap send.";
+                    stopSpeechRecognition();
+                    // Auto send after speech
+                    setTimeout(() => sendUserAnswer(), 400);
+                };
+
+                recognition.onerror = (event) => {
+                    console.error("Speech recognition error", event.error);
+                    stopSpeechRecognition();
+                    document.getElementById('speech-status').innerText = "Mic error. Try typing.";
+                };
+
+                recognition.onend = () => {
+                    stopSpeechRecognition();
+                };
+            } else {
+                document.getElementById('speech-status').innerText = "Speech recognition not supported in browser. Use keyboard.";
+            }
+        }
+
+        function toggleSpeechRecognition() {
+            if (!recognition) {
+                showNotification("Speech recognition not available.");
+                return;
+            }
+            if (isListening) {
+                recognition.stop();
+            } else {
+                try {
+                    recognition.start();
+                } catch(e) {
+                    console.error(e);
+                }
+            }
+        }
+
+        function stopSpeechRecognition() {
+            isListening = false;
+            document.getElementById('mic-pulse').classList.add('hidden');
+            document.getElementById('mic-btn').classList.remove('border-neon-green');
+            document.getElementById('speech-status').innerText = "Mic Ready. Tap mic or type.";
+        }
+
+        function appendChatMessage(sender, text) {
+            const container = document.getElementById('chat-container');
+            const isAi = sender === 'AI';
+            
+            const html = `
+                <div class="flex items-start space-x-3 max-w-[85%] ${isAi ? '' : 'ml-auto flex-row-reverse space-x-reverse'} animate-fade-in">
+                    <div class="w-8 h-8 rounded-full ${isAi ? 'bg-neon-green text-black' : 'bg-gray-600 text-white'} font-bold flex items-center justify-center shrink-0 text-xs">${isAi ? 'AI' : 'YOU'}</div>
+                    <div class="${isAi ? 'bg-dark-800 border border-dark-600 rounded-tl-sm text-gray-200' : 'bg-emerald-600 text-white rounded-tr-sm'} rounded-2xl p-4 text-sm shadow-md">
+                        <p>${escapeHtml(text)}</p>
+                        ${isAi ? `
+                        <div class="mt-3 flex items-center justify-between text-xs text-gray-400 border-t border-dark-700 pt-2">
+                            <span class="flex items-center gap-1 text-neon-green font-mono"><i data-lucide="sparkles" class="w-3.5 h-3.5"></i> Coach Feedback</span>
+                            <button onclick="speakText(\`${text.replace(/"/g, '&quot;')}\`)" class="hover:text-white flex items-center gap-1">
+                                <i data-lucide="volume-2" class="w-3.5 h-3.5"></i> Listen
+                            </button>
+                        </div>` : ''}
+                    </div>
+                </div>
+            `;
+            container.innerHTML += html;
+            lucide.createIcons();
+            container.scrollTop = container.scrollHeight;
+        }
+
+        async function sendUserAnswer() {
+            const inputEl = document.getElementById('user-input');
+            const text = inputEl.value.trim();
+            if (!text) return;
+
+            inputEl.value = '';
+            appendChatMessage('USER', text);
+
+            // Show evaluating state
+            document.getElementById('speech-status').innerText = "Coach Jax is analyzing your street phrasing...";
+
+            try {
+                const response = await callGeminiAI(text);
+                processCoachResponse(response);
+            } catch (err) {
+                console.error(err);
+                // Fallback simulation if API key is invalid or network error
+                processFallbackResponse(text);
+            }
+        }
+
+        async function callGeminiAI(userText) {
+            const stage = curriculum.find(s => s.id === currentStageId);
+            const systemPrompt = `You are Coach Jax, an elite, demanding American street slang and conversational English tutor. The user is at B1 level wanting to reach C1.
+Stage: ${stage.id} - ${stage.title} (${stage.desc})
+Evaluate the user's response strictly. Reject robotic textbook English. Correct mistakes, rate C1 readiness, and give a natural American street alternative.
+Respond strictly in JSON format with keys:
+{
+  "critique": "short rigorous critique of their sentence",
+  "score": "B1" | "B2" | "C1",
+  "suggestion": "how a native speaker on the US streets would actually say it",
+  "nextPrompt": "your next challenging question to keep the conversation going in this stage"
+}`;
+
+            const payload = {
+                contents: [
+                    { role: "user", parts: [{ text: `System Instruction: ${systemPrompt}\n\nUser Input: ${userText}` }] }
+                ],
+                generationConfig: {
+                    responseMimeType: "application/json"
+                }
+            };
+
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
+            const res = await fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            const data = await res.json();
+            const jsonText = data.candidates[0].content.parts[0].text;
+            return JSON.parse(jsonText);
+        }
+
+        function processCoachResponse(res) {
+            // Display Feedback Box
+            const feedbackCard = document.getElementById('feedback-card');
+            feedbackCard.classList.remove('hidden');
+            document.getElementById('critique').innerText = res.critique;
+            document.getElementById('feedback-critique').innerText = res.critique;
+            document.getElementById('score-badge').innerText = `Grade: ${res.score}`;
+            document.getElementById('feedback-suggestion').innerText = res.suggestion;
+
+            // Append AI next prompt
+            appendChatMessage('AI', res.nextPrompt);
+            speakText(res.nextPrompt);
+
+            // Progress turns
+            const stage = curriculum.find(s => s.id === currentStageId);
+            currentTurn++;
+            if (currentTurn > stage.goalTurns) {
+                if (currentStageId < curriculum.length) {
+                    currentStageId++;
+                    currentTurn = 1;
+                    showNotification(`Stage Completed! Unlocking Stage ${currentStageId}`);
+                } else {
+                    showNotification("Incredible! You've mastered all stages to C1 fluency!");
+                }
+            }
+            updateHeader();
+            renderStagePills();
+            document.getElementById('speech-status').innerText = "Mic Ready. Tap mic or type.";
+        }
+
+        function processFallbackResponse(text) {
+            // Smart local fallback if no API key is set
+            const feedbackCard = document.getElementById('feedback-card');
+            feedbackCard.classList.remove('hidden');
+            
+            let critique = "A bit too textbook and formal. Real speakers in NYC or LA keep it punchier.";
+            let suggestion = "Try using contractions and natural fillers like 'Honestly', 'Pretty much', or 'You know'.";
+            let score = "B2";
+            let nextPrompt = "Alright, I see what you mean. Now tell me: what's your go-to move when things get hectic during your day?";
+
+            if (currentStageId === 1) {
+                suggestion = "Instead of 'Hello, how are you?', drop a 'What's good?' or 'Yo, what's happening?'";
+                nextPrompt = "Good energy! Now imagine you're running late to meet a friend. How do you text them you're on your way?";
+            } else if (currentStageId === 2) {
+                suggestion = "Instead of 'I am employed as an office worker', say 'I'm grinding out 9-to-5 desk work' or 'I'm on the corporate grind'.";
+                nextPrompt = "Gotcha. Do you side-hustle or just stick to the main gig?";
+            }
+
+            document.getElementById('feedback-critique').innerText = critique;
+            document.getElementById('score-badge').innerText = `Grade: ${score}`;
+            document.getElementById('feedback-suggestion').innerText = suggestion;
+
+            appendChatMessage('AI', nextPrompt);
+            speakText(nextPrompt);
+
+            currentTurn++;
+            const stage = curriculum.find(s => s.id === currentStageId);
+            if (currentTurn > stage.goalTurns && currentStageId < curriculum.length) {
+                currentStageId++;
+                currentTurn = 1;
+                showNotification(`Stage Completed! Unlocking Stage ${currentStageId}`);
+            }
+            updateHeader();
+            renderStagePills();
+            document.getElementById('speech-status').innerText = "Mic Ready. Tap mic or type. (Tip: Add Gemini API key for dynamic AI)";
+        }
+
+        function showNotification(msg) {
+            const div = document.createElement('div');
+            div.className = 'fixed top-20 left-1/2 -translate-x-1/2 bg-neon-green text-black font-bold text-xs px-4 py-2 rounded-xl shadow-xl z-50 animate-bounce';
+            div.innerText = msg;
+            document.body.appendChild(div);
+            setTimeout(() => div.remove(), 3500);
+        }
+
+        function escapeHtml(string) {
+            return String(string).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+        }
+    </script>
+</body>
+</html>
