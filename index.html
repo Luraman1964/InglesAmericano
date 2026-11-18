@@ -1,587 +1,1733 @@
 <!DOCTYPE html>
 <html lang="en" class="dark">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>StreetEnglish AI Pro</title>
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        dark: {
-                            900: '#0a0a0c',
-                            800: '#121216',
-                            700: '#1c1c24',
-                            600: '#2a2a35'
-                        },
-                        neon: {
-                            green: '#00ff66',
-                            yellow: '#facc15',
-                            coral: '#ff4b4b'
-                        }
-                    }
-                }
-            }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#0a0a0c" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <title>StreetEnglish AI Pro — B1 to C1 Listen & Repeat Coach</title>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Inter & JetBrains Mono -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet" />
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            obsidian: '#0a0a0c',
+            charcoal: '#121318',
+            slatecard: '#181a22',
+            neon: '#00ff66',
+            neondim: '#00cc52',
+          }
         }
-    </script>
-    <!-- Lucide Icons -->
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <!-- Google Fonts: Inter -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        body { font-family: 'Inter', sans-serif; background-color: #0a0a0c; color: #f3f4f6; }
-        .pulse-ring {
-            animation: pulse-ring 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
-        }
-        @keyframes pulse-ring {
-            0% { transform: scale(0.95); opacity: 0.8; }
-            50% { transform: scale(1.15); opacity: 0.4; }
-            100% { transform: scale(0.95); opacity: 0.8; }
-        }
-        /* Custom scrollbar */
-        ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-track { background: #121216; }
-        ::-webkit-scrollbar-thumb { background: #2a2a35; border-radius: 4px; }
-    </style>
-    <!-- PWA Manifest link -->
-    <link rel="manifest" href="manifest.json">
+      }
+    };
+  </script>
+
+  <style>
+    body {
+      background-color: #0a0a0c;
+      color: #f3f4f6;
+      -webkit-tap-highlight-color: transparent;
+      overflow-x: hidden;
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0a0a0c;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #262936;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #00ff66;
+    }
+
+    /* Neon Glow & Pulse Animations */
+    .neon-shadow {
+      box-shadow: 0 0 24px rgba(0, 255, 102, 0.25);
+    }
+    .neon-shadow-strong {
+      box-shadow: 0 0 36px rgba(0, 255, 102, 0.45);
+    }
+    @keyframes pulseRing {
+      0% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(0, 255, 102, 0.65);
+      }
+      70% {
+        transform: scale(1.03);
+        box-shadow: 0 0 0 22px rgba(0, 255, 102, 0);
+      }
+      100% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(0, 255, 102, 0);
+      }
+    }
+    .recording-pulse {
+      animation: pulseRing 1.5s infinite;
+    }
+
+    @keyframes soundWave {
+      0%, 100% { height: 6px; }
+      50% { height: 24px; }
+    }
+    .wave-bar {
+      animation: soundWave 0.8s ease-in-out infinite;
+    }
+    .wave-bar:nth-child(2) { animation-delay: 0.15s; }
+    .wave-bar:nth-child(3) { animation-delay: 0.3s; }
+    .wave-bar:nth-child(4) { animation-delay: 0.45s; }
+    .wave-bar:nth-child(5) { animation-delay: 0.2s; }
+
+    .glass-panel {
+      background: rgba(24, 26, 34, 0.82);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+  </style>
 </head>
-<body class="min-h-screen flex flex-col justify-between overflow-x-hidden selection:bg-neon-green selection:text-black">
+<body class="min-h-screen flex flex-col justify-between selection:bg-neon selection:text-obsidian">
 
-    <!-- Top Navigation Header -->
-    <header class="sticky top-0 z-50 bg-dark-800/90 backdrop-blur-md border-b border-dark-600 px-4 py-3 flex items-center justify-between">
-        <div class="flex items-center space-x-3">
-            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-neon-green to-emerald-600 flex items-center justify-center shadow-lg shadow-neon-green/20">
-                <i data-lucide="zap" class="w-6 h-6 text-black fill-black"></i>
-            </div>
-            <div>
-                <h1 class="font-bold text-base tracking-wide text-white flex items-center gap-1.5">
-                    StreetEnglish <span class="text-xs bg-neon-green/20 text-neon-green px-1.5 py-0.5 rounded font-mono uppercase">AI Pro</span>
-                </h1>
-                <p class="text-xs text-gray-400" id="header-stage-title">Stage 1: Street Icebreakers</p>
-            </div>
+  <!-- TOP NAVIGATION BAR -->
+  <header class="sticky top-0 z-30 glass-panel border-b border-white/10 px-4 py-3">
+    <div class="max-w-3xl mx-auto flex items-center justify-between gap-2">
+      <!-- Brand -->
+      <div class="flex items-center gap-2.5">
+        <div class="w-9 h-9 rounded-xl bg-neon/15 border border-neon/40 flex items-center justify-center text-neon font-black text-lg shadow-inner">
+          JX
         </div>
-        <div class="flex items-center space-x-2">
-            <button onclick="openSettings()" class="p-2 rounded-xl bg-dark-700 text-gray-300 hover:text-white hover:bg-dark-600 transition border border-dark-600" title="API Settings">
-                <i data-lucide="key" class="w-5 h-5"></i>
-            </button>
-            <button onclick="openStagesModal()" class="px-3 py-1.5 rounded-xl bg-dark-700 text-xs font-semibold text-neon-green border border-dark-600 hover:bg-dark-600 transition flex items-center gap-1.5">
-                <i data-lucide="layers" class="w-4 h-4"></i>
-                <span id="header-progress-text">1/5 Turns</span>
-            </button>
+        <div>
+          <div class="flex items-center gap-1.5">
+            <h1 class="font-extrabold text-sm sm:text-base tracking-tight text-white">StreetEnglish <span class="text-neon">AI Pro</span></h1>
+            <span id="current-cefr-badge" class="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded bg-neon/15 text-neon border border-neon/30">B1</span>
+          </div>
+          <p class="text-[11px] text-gray-400 hidden sm:block">American Street Fluency • Listen & Repeat Coach</p>
         </div>
-    </header>
+      </div>
 
-    <!-- Main Container -->
-    <main class="flex-1 max-w-2xl w-full mx-auto p-4 flex flex-col pb-24">
-
-        <!-- Stage Banner / Coach Card -->
-        <section class="mb-4 bg-gradient-to-r from-dark-800 to-dark-700 border border-dark-600 rounded-2xl p-4 shadow-xl relative overflow-hidden">
-            <div class="absolute -right-10 -bottom-10 w-32 h-32 bg-neon-green/5 rounded-full blur-2xl pointer-events-none"></div>
-            <div class="flex items-start justify-between">
-                <div class="flex items-center space-x-3">
-                    <div class="w-12 h-12 rounded-full bg-dark-600 border-2 border-neon-green flex items-center justify-center text-xl font-bold text-neon-green shadow-inner">
-                        🧢
-                    </div>
-                    <div>
-                        <div class="flex items-center gap-2">
-                            <h2 class="font-bold text-white text-sm" id="coach-name">Coach Jax (US Street Pro)</h2>
-                            <span class="inline-flex items-center px-1.5 py-0.2 rounded-full text-[10px] font-medium bg-red-500/20 text-red-400 border border-red-500/30">Strict C1 Mode</span>
-                        </div>
-                        <p class="text-xs text-gray-400 mt-0.5" id="stage-desc">Mastering casual US greetings like 'What's good?', 'How's it going?'</p>
-                    </div>
-                </div>
-                <button onclick="playCoachIntro()" class="p-2 rounded-lg bg-dark-600 text-neon-green hover:bg-dark-500 transition" title="Listen to prompt">
-                    <i data-lucide="volume-2" class="w-5 h-5"></i>
-                </button>
-            </div>
-            
-            <!-- Stage Selector Pills -->
-            <div class="mt-4 pt-3 border-t border-dark-600/60 flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar" id="stage-pills">
-                <!-- Generated dynamically -->
-            </div>
-        </section>
-
-        <!-- Chat Conversation Flow -->
-        <div id="chat-container" class="flex-1 space-y-4 mb-4 flex flex-col">
-            <!-- Initial AI Greeting Message -->
-            <div class="flex items-start space-x-3 max-w-[85%]">
-                <div class="w-8 h-8 rounded-full bg-neon-green text-black font-bold flex items-center justify-center shrink-0 text-xs">AI</div>
-                <div class="bg-dark-800 border border-dark-600 rounded-2xl rounded-tl-sm p-4 text-sm text-gray-200 shadow-md">
-                    <p id="ai-greeting-text">Yo! Welcome to the streets. I'm Jax, your no-nonsense American English coach. No textbook boring grammar here—we talk real. Let's start with Stage 1: How do you casually greet someone you run into on the block? Hit me with a natural US greeting!</p>
-                    <div class="mt-3 flex items-center justify-between text-xs text-gray-400 border-t border-dark-700 pt-2">
-                        <span class="flex items-center gap-1 text-neon-green font-mono"><i data-lucide="sparkles" class="w-3.5 h-3.5"></i> Challenge #1</span>
-                        <button onclick="speakText(document.getElementById('ai-greeting-text').innerText)" class="hover:text-white flex items-center gap-1">
-                            <i data-lucide="volume-2" class="w-3.5 h-3.5"></i> Listen
-                        </button>
-                    </div>
-                </div>
-            </div>
+      <!-- Stats & Action Controls -->
+      <div class="flex items-center gap-1.5 sm:gap-2">
+        <!-- Streak / XP Pill -->
+        <div class="flex items-center gap-2 bg-charcoal border border-white/10 px-2.5 py-1.5 rounded-xl text-xs font-mono">
+          <span class="flex items-center gap-1 text-amber-400 font-bold" title="Mastered Streak">
+            <i data-lucide="flame" class="w-3.5 h-3.5 fill-amber-400"></i>
+            <span id="streak-count">0</span>
+          </span>
+          <span class="text-white/20">|</span>
+          <span class="flex items-center gap-1 text-neon font-bold" title="Fluency XP">
+            <i data-lucide="zap" class="w-3.5 h-3.5"></i>
+            <span id="xp-count">0</span>
+          </span>
         </div>
 
-        <!-- Evaluation Feedback Box (Hidden by default) -->
-        <div id="feedback-card" class="hidden mb-4 bg-dark-800 border-2 border-neon-green/40 rounded-2xl p-4 shadow-xl animate-fade-in">
-            <div class="flex items-center justify-between mb-2">
-                <span class="text-xs font-bold uppercase tracking-wider text-neon-green flex items-center gap-1">
-                    <i data-lucide="shield-check" class="w-4 h-4"></i> Coach Verdict & Breakdown
-                </span>
-                <span id="score-badge" class="px-2 py-0.5 rounded text-xs font-bold font-mono bg-neon-green/20 text-neon-green">Grade: C1</span>
-            </div>
-            <p id="feedback-critique" class="text-xs text-gray-300 mb-3"></p>
-            <div class="bg-dark-900 rounded-xl p-3 border border-dark-600 text-xs space-y-1.5">
-                <div class="text-gray-400 font-semibold uppercase text-[10px]">Street Upgrade Suggestion:</div>
-                <div id="feedback-suggestion" class="text-neon-green font-medium"></div>
-            </div>
-        </div>
+        <!-- EN / ES Helper Toggle -->
+        <button id="lang-toggle-btn" onclick="toggleSpanishHelper()" class="px-2.5 py-1.5 rounded-xl bg-charcoal hover:bg-white/10 border border-white/10 text-xs font-bold text-gray-200 transition flex items-center gap-1" title="Toggle Spanish Translations & Tips">
+          <i data-lucide="languages" class="w-3.5 h-3.5 text-neon"></i>
+          <span id="lang-toggle-label">ES: ON</span>
+        </button>
 
-    </main>
+        <!-- PWA Export / Install Modal Trigger -->
+        <button onclick="openModal('pwa-modal')" class="p-2 rounded-xl bg-charcoal hover:bg-white/10 border border-white/10 text-gray-300 hover:text-neon transition" title="PWA Files & Install">
+          <i data-lucide="download" class="w-4 h-4"></i>
+        </button>
 
-    <!-- Bottom Fixed Input Dock -->
-    <footer class="fixed bottom-0 left-0 right-0 bg-dark-800/95 backdrop-blur-lg border-t border-dark-600 p-3 z-40">
-        <div class="max-w-2xl mx-auto flex items-center gap-2">
-            <!-- Voice Record Button -->
-            <button id="mic-btn" onclick="toggleSpeechRecognition()" class="w-12 h-12 rounded-2xl bg-dark-700 border border-dark-600 text-gray-300 hover:text-white flex items-center justify-center shrink-0 transition relative group" title="Hold or Click to Speak">
-                <i data-lucide="mic" class="w-5 h-5" id="mic-icon"></i>
-                <div id="mic-pulse" class="absolute inset-0 rounded-2xl border-2 border-neon-green pulse-ring hidden"></div>
-            </button>
-
-            <!-- Text Input -->
-            <div class="flex-1 relative flex items-center">
-                <input type="text" id="user-input" placeholder="Type or speak your street response..." class="w-full bg-dark-900 border border-dark-600 rounded-2xl px-4 py-3 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-neon-green transition pr-10">
-                <button onclick="sendUserAnswer()" class="absolute right-2 p-2 rounded-xl bg-neon-green text-black hover:bg-emerald-400 transition font-bold" title="Send Answer">
-                    <i data-lucide="send" class="w-4 h-4"></i>
-                </button>
-            </div>
-        </div>
-        <div class="max-w-2xl mx-auto mt-1.5 flex items-center justify-between text-[11px] text-gray-400 px-1">
-            <span id="speech-status">Mic Ready. Tap mic or type.</span>
-            <span class="text-neon-green font-mono">Gemini AI Street Core</span>
-        </div>
-    </footer>
-
-    <!-- Settings Modal -->
-    <div id="settings-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-dark-800 border border-dark-600 rounded-3xl max-w-md w-full p-6 shadow-2xl relative">
-            <button onclick="closeSettings()" class="absolute top-4 right-4 text-gray-400 hover:text-white">
-                <i data-lucide="x" class="w-5 h-5"></i>
-            </button>
-            <h3 class="text-lg font-bold text-white mb-2 flex items-center gap-2">
-                <i data-lucide="key" class="w-5 h-5 text-neon-green"></i> Gemini API Configuration
-            </h3>
-            <p class="text-xs text-gray-400 mb-4">Enter your Gemini API key to power the uncompromising street tutor agent. Stored securely in your browser's localStorage.</p>
-            <div class="space-y-3">
-                <div>
-                    <label class="block text-xs font-medium text-gray-300 mb-1">API Key</label>
-                    <input type="password" id="api-key-input" placeholder="AIzaSy..." class="w-full bg-dark-900 border border-dark-600 rounded-xl px-3 py-2.5 text-sm text-white focus:outline-none focus:border-neon-green">
-                </div>
-                <button onclick="saveApiKey()" class="w-full py-3 rounded-xl bg-neon-green text-black font-bold text-sm hover:bg-emerald-400 transition shadow-lg shadow-neon-green/20">
-                    Save & Initialize Coach
-                </button>
-            </div>
-        </div>
+        <!-- Gemini AI Settings Modal Trigger -->
+        <button onclick="openModal('settings-modal')" class="p-2 rounded-xl bg-charcoal hover:bg-white/10 border border-white/10 text-gray-300 hover:text-neon transition relative" title="Voice & Gemini AI Settings">
+          <i data-lucide="sliders-horizontal" class="w-4 h-4"></i>
+          <span id="ai-active-dot" class="hidden absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-neon"></span>
+        </button>
+      </div>
     </div>
+  </header>
 
-    <!-- Stages Overview Modal -->
-    <div id="stages-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-dark-800 border border-dark-600 rounded-3xl max-w-lg w-full p-6 shadow-2xl relative max-h-[85vh] overflow-y-auto">
-            <button onclick="closeStagesModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white">
-                <i data-lucide="x" class="w-5 h-5"></i>
-            </button>
-            <h3 class="text-lg font-bold text-white mb-1 flex items-center gap-2">
-                <i data-lucide="layers" class="w-5 h-5 text-neon-green"></i> Street English Mastery Curriculum
-            </h3>
-            <p class="text-xs text-gray-400 mb-4">Progress step-by-step from B1 conversational to C1 native street fluency.</p>
-            
-            <div class="space-y-3" id="stages-list-container">
-                <!-- Populated dynamically -->
+  <!-- MAIN CONTENT CONTAINER -->
+  <main class="flex-1 w-full max-w-3xl mx-auto px-4 py-5 flex flex-col gap-4">
+
+    <!-- STAGE SELECTOR PILLS (B1 -> C1) -->
+    <section aria-label="Curriculum Stages">
+      <div class="flex items-center justify-between mb-2">
+        <span class="text-[11px] font-mono uppercase tracking-wider text-gray-400">Progression Roadmap (B1 → C1)</span>
+        <span id="stage-progress-text" class="text-xs font-mono text-neon font-semibold">0 / 9 Mastered</span>
+      </div>
+      <div id="stage-tabs" class="grid grid-cols-5 gap-1.5 sm:gap-2">
+        <!-- Populated dynamically by JS -->
+      </div>
+      <!-- Progress Bar -->
+      <div class="w-full h-1.5 bg-charcoal rounded-full overflow-hidden mt-2.5 border border-white/5">
+        <div id="stage-progress-bar" class="h-full bg-gradient-to-r from-emerald-500 to-neon transition-all duration-500" style="width: 0%"></div>
+      </div>
+    </section>
+
+    <!-- COACH JAX LIVE PROMPT & DRILL CARD -->
+    <section class="glass-panel rounded-2xl p-4 sm:p-6 shadow-2xl relative overflow-hidden">
+      <!-- Subtle top accent line -->
+      <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-neon/60 to-transparent"></div>
+
+      <!-- Coach Header & Drill Counter -->
+      <div class="flex items-center justify-between gap-2 mb-4">
+        <div class="flex items-center gap-2.5">
+          <div class="relative">
+            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-neon/30 to-emerald-900/40 border border-neon/50 flex items-center justify-center text-neon font-black text-sm">
+              JAX
             </div>
+            <span class="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-neon border-2 border-slatecard"></span>
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="font-bold text-sm text-white">Coach Jax</span>
+              <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-white/5 text-gray-300 border border-white/10" id="drill-category-tag">Street Icebreaker</span>
+            </div>
+            <p id="coach-directive" class="text-xs text-neon font-medium mt-0.5">
+              "Listen closely to my flow, then repeat it back at full native speed."
+            </p>
+          </div>
         </div>
+
+        <div class="text-right shrink-0">
+          <span id="drill-counter" class="text-xs font-mono font-bold text-gray-300 bg-obsidian/80 px-2.5 py-1 rounded-lg border border-white/10">
+            1 / 9
+          </span>
+        </div>
+      </div>
+
+      <!-- TARGET SENTENCE DISPLAY -->
+      <div class="bg-obsidian/90 border border-white/10 rounded-2xl p-4 sm:p-5 mb-4 relative">
+        <div class="flex items-center justify-between gap-2 mb-2">
+          <span class="text-[11px] font-mono uppercase tracking-wider text-gray-400 flex items-center gap-1.5">
+            <i data-lucide="volume-2" class="w-3.5 h-3.5 text-neon"></i>
+            Target Street Phrase
+          </span>
+          <div class="flex items-center gap-1.5">
+            <!-- Target WPM Badge -->
+            <span id="target-wpm-badge" class="text-[11px] font-mono text-gray-400 bg-white/5 px-2 py-0.5 rounded-md" title="Target conversational pace">
+              Goal: ~130 WPM
+            </span>
+            <!-- Hide Text Ear-Training Mode -->
+            <button id="blind-mode-btn" onclick="toggleBlindMode()" class="text-[11px] font-mono px-2 py-0.5 rounded-md bg-white/5 hover:bg-white/10 text-gray-300 border border-white/10 transition flex items-center gap-1" title="Hide text to train pure listening">
+              <i data-lucide="eye" id="blind-mode-icon" class="w-3 h-3 text-neon"></i>
+              <span id="blind-mode-label">Ear Mode</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Sentence Text (or Masked in Ear Mode) -->
+        <p id="target-sentence" class="text-xl sm:text-2xl font-extrabold text-white leading-snug tracking-tight mb-3">
+          "How's everything going? What's up, man—what's new?"
+        </p>
+
+        <!-- Spanish Meaning (Toggleable) -->
+        <p id="spanish-translation" class="text-xs sm:text-sm text-gray-400 italic border-l-2 border-neon/40 pl-3 mb-3">
+          "¿Cómo va todo? ¿Qué onda, hermano—qué hay de nuevo?"
+        </p>
+
+        <!-- Street Phonetics & Linking Breakdown -->
+        <div class="bg-charcoal/90 rounded-xl p-3 border border-white/5">
+          <div class="flex items-center gap-1.5 text-[11px] font-mono text-neon uppercase font-bold mb-1">
+            <i data-lucide="waves" class="w-3.5 h-3.5"></i>
+            Native Street Sound & Linking
+          </div>
+          <p id="phonetic-guide" class="text-xs sm:text-sm font-mono text-amber-300/95 mb-1">
+            "How'z ev-ry-thing goin'? Wuddup, man—wuh's new?"
+          </p>
+          <p id="linking-tip" class="text-xs text-gray-400 leading-relaxed">
+            Drop the 'g' in "going" (goin') and blend "What's up" into a fast punchy "Wuddup". Keep the rhythm connected without pausing between words.
+          </p>
+        </div>
+      </div>
+
+      <!-- AUDIO PLAYBACK CONTROLS -->
+      <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5 mb-2">
+        <button id="play-normal-btn" onclick="speakTargetSentence(1.0)" class="col-span-1 sm:col-span-2 py-3 px-4 rounded-xl bg-neon hover:bg-neondim active:scale-[0.99] text-obsidian font-extrabold text-sm flex items-center justify-center gap-2 transition neon-shadow">
+          <i data-lucide="play" class="w-4 h-4 fill-obsidian"></i>
+          <span>Listen Native (1.0x)</span>
+        </button>
+
+        <button id="play-slow-btn" onclick="speakTargetSentence(0.72)" class="col-span-1 py-3 px-3 rounded-xl bg-charcoal hover:bg-white/10 active:scale-[0.99] text-white border border-white/15 font-bold text-xs sm:text-sm flex items-center justify-center gap-1.5 transition">
+          <i data-lucide="snail" class="w-4 h-4 text-amber-400"></i>
+          <span>Slow (0.75x)</span>
+        </button>
+      </div>
+
+      <!-- AI Generate Custom Drill Button (Visible if API Key is set or opens setup) -->
+      <div class="flex items-center justify-between pt-2 border-t border-white/5 mt-3 text-xs">
+        <button onclick="prevDrill()" class="text-gray-400 hover:text-white flex items-center gap-1 py-1 px-2 rounded-lg hover:bg-white/5 transition">
+          <i data-lucide="chevron-left" class="w-4 h-4"></i> Prev
+        </button>
+
+        <button onclick="handleGenerateAIDrill()" id="ai-gen-btn" class="text-neon/90 hover:text-neon font-mono text-[11px] flex items-center gap-1.5 py-1 px-2.5 rounded-lg bg-neon/10 hover:bg-neon/15 border border-neon/25 transition">
+          <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
+          <span>AI Fresh Drill</span>
+        </button>
+
+        <button onclick="skipDrill()" class="text-gray-400 hover:text-white flex items-center gap-1 py-1 px-2 rounded-lg hover:bg-white/5 transition">
+          Skip <i data-lucide="chevron-right" class="w-4 h-4"></i>
+        </button>
+      </div>
+    </section>
+
+    <!-- YOUR TURN: MICROPHONE & LIVE FEEDBACK AREA -->
+    <section class="glass-panel rounded-2xl p-4 sm:p-6 flex flex-col items-center text-center relative">
+      <!-- Status Badge -->
+      <div id="mic-status-pill" class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-obsidian border border-white/10 text-xs font-mono text-gray-300 mb-4">
+        <span id="mic-status-dot" class="w-2 h-2 rounded-full bg-gray-500"></span>
+        <span id="mic-status-text">Tap the mic and repeat the phrase clearly</span>
+      </div>
+
+      <!-- Live Soundwave Visualizer (Visible while recording) -->
+      <div id="recording-visualizer" class="hidden items-center justify-center gap-1.5 h-8 mb-3">
+        <div class="w-1.5 bg-neon rounded-full wave-bar"></div>
+        <div class="w-1.5 bg-neon rounded-full wave-bar"></div>
+        <div class="w-1.5 bg-neon rounded-full wave-bar"></div>
+        <div class="w-1.5 bg-neon rounded-full wave-bar"></div>
+        <div class="w-1.5 bg-neon rounded-full wave-bar"></div>
+      </div>
+
+      <!-- BIG MIC BUTTON -->
+      <button id="mic-btn" onclick="toggleRecording()" class="w-20 h-20 rounded-full bg-gradient-to-b from-neon to-emerald-500 hover:from-emerald-300 hover:to-neon text-obsidian flex items-center justify-center shadow-xl neon-shadow transition-all duration-200 active:scale-95 focus:outline-none">
+        <i data-lucide="mic" id="mic-icon" class="w-9 h-9 stroke-[2.5]"></i>
+      </button>
+      <p id="mic-subhint" class="text-[11px] text-gray-400 mt-2.5 font-mono">
+        Must hit ≥80% accuracy & natural pace to unlock next phrase
+      </p>
+
+      <!-- EVALUATION RESULT PANEL (Hidden until first attempt) -->
+      <div id="evaluation-panel" class="hidden w-full mt-5 pt-5 border-t border-white/10 text-left animate-fade-in">
+        <!-- Metrics Row -->
+        <div class="grid grid-cols-3 gap-2 mb-4">
+          <div class="bg-obsidian/90 border border-white/10 rounded-xl p-2.5 text-center">
+            <div class="text-[10px] font-mono uppercase text-gray-400">Accuracy</div>
+            <div id="score-accuracy" class="text-lg sm:text-xl font-black text-neon font-mono">0%</div>
+          </div>
+          <div class="bg-obsidian/90 border border-white/10 rounded-xl p-2.5 text-center">
+            <div class="text-[10px] font-mono uppercase text-gray-400">Speed / Pace</div>
+            <div id="score-wpm" class="text-lg sm:text-xl font-black text-white font-mono">0 WPM</div>
+          </div>
+          <div class="bg-obsidian/90 border border-white/10 rounded-xl p-2.5 text-center">
+            <div class="text-[10px] font-mono uppercase text-gray-400">Status</div>
+            <div id="score-verdict" class="text-xs sm:text-sm font-extrabold text-amber-400 mt-1 uppercase">RETRY</div>
+          </div>
+        </div>
+
+        <!-- Word-by-Word Breakdown -->
+        <div class="bg-obsidian/80 border border-white/10 rounded-xl p-3.5 mb-3">
+          <div class="text-[10px] font-mono uppercase text-gray-400 mb-1.5 flex items-center justify-between">
+            <span>Word-by-Word Check</span>
+            <span class="text-[10px]"><span class="text-neon">■ Matched</span> &nbsp; <span class="text-rose-400">■ Missed/Unclear</span></span>
+          </div>
+          <div id="word-diff-container" class="flex flex-wrap gap-1.5 text-sm sm:text-base font-bold leading-relaxed">
+            <!-- Populated by JS -->
+          </div>
+          <div class="mt-2.5 pt-2 border-t border-white/5 text-xs text-gray-400">
+            <span class="font-mono text-gray-500">Heard:</span> "<span id="raw-transcript" class="text-gray-200 italic">...</span>"
+          </div>
+        </div>
+
+        <!-- Coach Jax Feedback Box -->
+        <div id="coach-feedback-box" class="rounded-xl p-3.5 border bg-amber-500/10 border-amber-500/30 flex items-start gap-3">
+          <div id="feedback-icon-wrap" class="p-2 rounded-lg bg-amber-500/20 text-amber-400 shrink-0 mt-0.5">
+            <i data-lucide="alert-circle" class="w-4 h-4"></i>
+          </div>
+          <div class="flex-1">
+            <h4 id="feedback-title" class="text-xs font-extrabold uppercase tracking-wider text-amber-400 mb-0.5">
+              Almost there — Repeat it again!
+            </h4>
+            <p id="feedback-message" class="text-xs sm:text-sm text-gray-200 leading-relaxed">
+              You missed a couple words. Listen at 0.75x if needed, then repeat the full sentence smoothly.
+            </p>
+            <p id="feedback-message-es" class="text-xs text-gray-400 italic mt-1">
+              Te faltaron algunas palabras. Escúchala a 0.75x si lo necesitas y repite la oración completa con ritmo.
+            </p>
+          </div>
+        </div>
+
+        <!-- Next Phrase CTA (Appears when mastered) -->
+        <button id="next-drill-btn" onclick="advanceToNextDrill()" class="hidden w-full mt-3.5 py-3.5 px-4 rounded-xl bg-neon hover:bg-neondim text-obsidian font-black text-sm uppercase tracking-wide flex items-center justify-center gap-2 transition neon-shadow-strong">
+          <span>Nailed It! Next Phrase</span>
+          <i data-lucide="arrow-right" class="w-4 h-4 stroke-[3]"></i>
+        </button>
+      </div>
+
+      <!-- Manual Text Fallback (If mic is blocked in preview/iframe) -->
+      <div id="manual-fallback-wrap" class="w-full mt-4 pt-3 border-t border-white/5">
+        <button onclick="toggleManualInput()" class="text-[11px] font-mono text-gray-500 hover:text-gray-300 underline">
+          Mic unavailable in browser preview? Test with keyboard input
+        </button>
+        <div id="manual-input-box" class="hidden mt-2.5 flex gap-2">
+          <input type="text" id="manual-text-input" placeholder="Type what you would say..." class="flex-1 bg-obsidian border border-white/15 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-neon" onkeydown="if(event.key==='Enter') submitManualInput()" />
+          <button onclick="submitManualInput()" class="px-3.5 py-2 rounded-xl bg-neon text-obsidian font-bold text-xs">Check</button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="max-w-3xl w-full mx-auto px-4 py-4 text-center text-[11px] text-gray-500 font-mono">
+    StreetEnglish AI Pro • Listen, Shadow & Master American Flow (B1 → C1)
+  </footer>
+
+  <!-- ===================================================================== -->
+  <!-- MODAL 1: VOICE & GEMINI AI SETTINGS                                   -->
+  <!-- ===================================================================== -->
+  <div id="settings-modal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="glass-panel w-full max-w-md rounded-2xl p-5 sm:p-6 border border-white/15 shadow-2xl">
+      <div class="flex items-center justify-between mb-4">
+        <div class="flex items-center gap-2">
+          <i data-lucide="sliders-horizontal" class="w-5 h-5 text-neon"></i>
+          <h3 class="font-extrabold text-base text-white">Coach Jax & AI Settings</h3>
+        </div>
+        <button onclick="closeModal('settings-modal')" class="p-1.5 rounded-lg text-gray-400 hover:text-white hover:bg-white/10">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <div class="space-y-4">
+        <!-- American Voice Selector -->
+        <div>
+          <label class="block text-xs font-mono uppercase text-gray-400 mb-1.5">American English Voice (en-US)</label>
+          <select id="voice-select" onchange="saveVoicePreference()" class="w-full bg-obsidian border border-white/15 rounded-xl px-3 py-2.5 text-xs sm:text-sm text-white focus:outline-none focus:border-neon">
+            <option value="">Default US English Voice</option>
+          </select>
+        </div>
+
+        <!-- Auto-Play Next Phrase Toggle -->
+        <div class="flex items-center justify-between bg-obsidian/70 p-3 rounded-xl border border-white/10">
+          <div>
+            <div class="text-xs font-bold text-white">Auto-speak new phrases</div>
+            <div class="text-[11px] text-gray-400">Coach Jax reads each new phrase automatically</div>
+          </div>
+          <input type="checkbox" id="autoplay-toggle" checked onchange="saveSettings()" class="w-4 h-4 accent-[#00ff66] rounded cursor-pointer" />
+        </div>
+
+        <!-- Strictness Level -->
+        <div>
+          <label class="block text-xs font-mono uppercase text-gray-400 mb-1.5">Coach Jax Strictness</label>
+          <select id="strictness-select" onchange="saveSettings()" class="w-full bg-obsidian border border-white/15 rounded-xl px-3 py-2.5 text-xs sm:text-sm text-white focus:outline-none focus:border-neon">
+            <option value="standard">Standard Coach (≥80% Accuracy, ≥95 WPM)</option>
+            <option value="strict">Ruthless Native Mode (≥88% Accuracy, ≥115 WPM)</option>
+            <option value="relaxed">Warm-Up Mode (≥70% Accuracy, Any Speed)</option>
+          </select>
+        </div>
+
+        <!-- Optional Gemini API Key -->
+        <div class="pt-2 border-t border-white/10">
+          <div class="flex items-center justify-between mb-1.5">
+            <label class="text-xs font-mono uppercase text-neon font-bold flex items-center gap-1">
+              <i data-lucide="sparkles" class="w-3.5 h-3.5"></i> Gemini API Key (Optional)
+            </label>
+            <span class="text-[10px] text-gray-400">Stored locally in browser</span>
+          </div>
+          <input type="password" id="gemini-api-key" placeholder="AIzaSy... (Optional for infinite AI drills)" class="w-full bg-obsidian border border-white/15 rounded-xl px-3 py-2.5 text-xs text-white font-mono focus:outline-none focus:border-neon" />
+          <p class="text-[11px] text-gray-400 mt-1.5">
+            The 45-phrase B1→C1 curriculum works 100% free offline. Add a Gemini key to generate custom street drills on any topic.
+          </p>
+        </div>
+
+        <!-- Custom Topic for AI Drills -->
+        <div>
+          <label class="block text-xs font-mono uppercase text-gray-400 mb-1.5">Custom AI Drill Topic (Optional)</label>
+          <input type="text" id="custom-topic-input" placeholder="e.g., Ordering coffee in NYC, Tech job interview, Dating..." class="w-full bg-obsidian border border-white/15 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-neon" />
+        </div>
+
+        <div class="flex gap-2 pt-2">
+          <button onclick="saveSettings(); closeModal('settings-modal'); showToast('Settings saved!')" class="flex-1 py-2.5 rounded-xl bg-neon hover:bg-neondim text-obsidian font-extrabold text-xs uppercase tracking-wider transition">
+            Save Settings
+          </button>
+          <button onclick="resetProgress()" class="px-3 py-2.5 rounded-xl bg-rose-500/15 hover:bg-rose-500/25 text-rose-400 border border-rose-500/30 font-bold text-xs transition">
+            Reset XP
+          </button>
+        </div>
+      </div>
     </div>
+  </div>
 
-    <!-- Application Script -->
-    <script>
-        // Initialize Lucide Icons
-        lucide.createIcons();
+  <!-- ===================================================================== -->
+  <!-- MODAL 2: PWA MANIFEST & SERVICE WORKER EXPORT                         -->
+  <!-- ===================================================================== -->
+  <div id="pwa-modal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="glass-panel w-full max-w-lg rounded-2xl p-5 sm:p-6 border border-white/15 shadow-2xl max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between mb-3">
+        <div class="flex items-center gap-2">
+          <i data-lucide="smartphone" class="w-5 h-5 text-neon"></i>
+          <h3 class="font-extrabold text-base text-white">Install & PWA Package</h3>
+        </div>
+        <button onclick="closeModal('pwa-modal')" class="p-1.5 rounded-lg text-gray-400 hover:text-white hover:bg-white/10">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
 
-        // Curriculum Definition (5 Stages)
-        const curriculum = [
-            {
-                id: 1,
-                title: "Street Icebreakers",
-                subtitle: "Greetings & Casual Openings",
-                desc: "Mastering casual US greetings like 'What's good?', 'How's it going?', 'What's up?', and smooth responses.",
-                goalTurns: 3
-            },
-            {
-                id: 2,
-                title: "Daily Hustle & Jobs",
-                subtitle: "Side Hustles, Work & Grind",
-                desc: "Talking about what people do, trades, offices, remote gigs, and daily grind using natural idioms.",
-                goalTurns: 3
-            },
-            {
-                id: 3,
-                title: "Past Stories & Memories",
-                subtitle: "Narrating Back in the Day",
-                desc: "Narrating past events using casual past tense contractions and storytelling fillers like 'so basically', 'back in the day'.",
-                goalTurns: 3
-            },
-            {
-                id: 4,
-                title: "Present Chaos & Routine",
-                subtitle: "Current Lifestyle & Setup",
-                desc: "Describing current setups, habits, living situations, and daily chaos without sounding like a textbook.",
-                goalTurns: 3
-            },
-            {
-                id: 5,
-                title: "Future Ambitions & C1 Fluency",
-                subtitle: "Hypotheticals & Big Moves",
-                desc: "Mastering hypothetical scenarios, future plans, and advanced native expressions for true C1 level mastery.",
-                goalTurns: 3
-            }
-        ];
+      <p class="text-xs text-gray-300 mb-4 leading-relaxed">
+        <strong>Mobile Install:</strong> Open this page in Chrome (Android) or Safari (iOS) and tap <em>"Add to Home Screen"</em>. To self-host as a multi-file PWA, download the companion files below:
+      </p>
 
-        // State Management
-        let currentStageId = 1;
-        let currentTurn = 1;
-        let apiKey = localStorage.getItem('gemini_api_key') || '';
-        let isListening = false;
-        let recognition = null;
+      <!-- manifest.json preview -->
+      <div class="mb-3">
+        <div class="flex items-center justify-between mb-1">
+          <span class="text-xs font-mono font-bold text-neon">manifest.json</span>
+          <button onclick="downloadTextFile('manifest.json', getManifestContent())" class="text-[11px] font-mono bg-white/10 hover:bg-neon hover:text-obsidian px-2.5 py-1 rounded-lg transition">
+            Download manifest.json
+          </button>
+        </div>
+        <pre id="manifest-preview" class="bg-obsidian border border-white/10 rounded-xl p-3 text-[11px] font-mono text-gray-300 overflow-x-auto"></pre>
+      </div>
 
-        // Initialize App
-        window.addEventListener('DOMContentLoaded', () => {
-            if (!apiKey) {
-                // Prompt or keep empty for built-in fallback / prompt
-            }
-            renderStagePills();
-            updateHeader();
-            setupSpeechRecognition();
+      <!-- sw.js preview -->
+      <div class="mb-4">
+        <div class="flex items-center justify-between mb-1">
+          <span class="text-xs font-mono font-bold text-neon">sw.js (Offline Cache Service Worker)</span>
+          <button onclick="downloadTextFile('sw.js', getServiceWorkerContent())" class="text-[11px] font-mono bg-white/10 hover:bg-neon hover:text-obsidian px-2.5 py-1 rounded-lg transition">
+            Download sw.js
+          </button>
+        </div>
+        <pre id="sw-preview" class="bg-obsidian border border-white/10 rounded-xl p-3 text-[11px] font-mono text-gray-300 overflow-x-auto"></pre>
+      </div>
 
-            // Enter key listener
-            document.getElementById('user-input').addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') sendUserAnswer();
-            });
+      <button onclick="closeModal('pwa-modal')" class="w-full py-2.5 rounded-xl bg-charcoal hover:bg-white/10 border border-white/15 text-white font-bold text-xs">
+        Close
+      </button>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION -->
+  <div id="toast" class="fixed bottom-5 left-1/2 -translate-x-1/2 z-50 hidden bg-slatecard border border-neon/40 text-white px-4 py-2.5 rounded-xl shadow-2xl text-xs font-semibold flex items-center gap-2">
+    <i data-lucide="check-circle-2" class="w-4 h-4 text-neon"></i>
+    <span id="toast-msg">Notification</span>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- APPLICATION LOGIC & CURRICULUM DATA                                   -->
+  <!-- ===================================================================== -->
+  <script>
+    /**
+     * 1. COMPLETE B1 -> C1 AMERICAN STREET FLUENCY CURRICULUM (45 COMPLETE PHRASES)
+     * Designed for Listen -> Shadow -> Repeat Mastery Loop
+     */
+    const CURRICULUM = [
+      {
+        id: 1,
+        level: "B1",
+        title: "Street Icebreakers",
+        subtitle: "Greetings & Check-ins",
+        targetWpm: 110,
+        drills: [
+          {
+            category: "Greeting",
+            sentence: "How's everything going? What's up, man—what's new?",
+            spanish: "¿Cómo va todo? ¿Qué onda, hermano—qué hay de nuevo?",
+            phonetics: "How'z ev-ry-thing goin'? Wuddup, man—wuh's new?",
+            tip: "Blend 'What's up' into 'Wuddup' and drop the final 'g' in 'going'."
+          },
+          {
+            category: "Check-in",
+            sentence: "Long time no see! Where have you been hiding lately?",
+            spanish: "¡Cuánto tiempo sin verte! ¿Dónde te habías metido últimamente?",
+            phonetics: "Long time no see! Where'v ya bin hidin' lately?",
+            tip: "Compress 'Where have you been' into a fast 'Where'v ya bin'."
+          },
+          {
+            category: "Casual Vibe",
+            sentence: "Not much, just taking it easy and catching up on some sleep.",
+            spanish: "No mucho, solo tomándomelo con calma y recuperando algo de sueño.",
+            phonetics: "Not much, jus' takin' it easy an' catchin' up on some sleep.",
+            tip: "Link 'taking it' (takin' it) and 'catching up' (catchin' up) smoothly."
+          },
+          {
+            category: "Checking In",
+            sentence: "You look exhausted today—did you pull an all-nighter again?",
+            spanish: "Te ves agotado hoy—¿te quedaste despierto toda la noche otra vez?",
+            phonetics: "Ya look exhausted today—didja pull an all-nighter again?",
+            tip: "Blend 'did you' into 'didja' and link 'pull-an-all-nighter' as one unit."
+          },
+          {
+            category: "Small Talk",
+            sentence: "I'm doing alright, can't complain—just trying to survive this week.",
+            spanish: "Voy bien, no me puedo quejar—solo tratando de sobrevivir esta semana.",
+            phonetics: "I'm doin' alright, can't complain—jus' tryna survive this week.",
+            tip: "Turn 'trying to' into native 'tryna'. Keep the pace steady."
+          },
+          {
+            category: "Parting",
+            sentence: "Hey, I gotta bounce, but hit me up later so we can hang out.",
+            spanish: "Oye, me tengo que ir, pero escríbeme luego para que pasemos el rato.",
+            phonetics: "Hey, I gotta bounce, but hit me up later so we can hang out.",
+            tip: "'Got to' becomes 'gotta'. 'Hit me up' means text or call me."
+          },
+          {
+            category: "Reaction",
+            sentence: "No way! Are you serious right now, or are you just messing with me?",
+            spanish: "¡No puede ser! ¿Hablas en serio ahora mismo, o solo me estás molestando?",
+            phonetics: "No way! Are ya serious right now, or are ya jus' messin' with me?",
+            tip: "Put strong stress on 'No WAY!' and 'SE-rious' for authentic emotion."
+          },
+          {
+            category: "Plans",
+            sentence: "Let's grab a quick bite before we head over to the gym.",
+            spanish: "Comamos algo rápido antes de ir hacia el gimnasio.",
+            phonetics: "Let's grab a quick bite before we head over ta the gym.",
+            tip: "'Grab a bite' = get food. Reduce 'to' into a soft 'ta'."
+          },
+          {
+            category: "Gratitude",
+            sentence: "I really appreciate you looking out for me—I owe you one.",
+            spanish: "De verdad te agradezco que me cuides las espaldas—te debo una.",
+            phonetics: "I really appreciatecha lookin' out for me—I owe ya one.",
+            tip: "'Appreciate you' blends into 'appreciate-cha' in fast American speech."
+          }
+        ]
+      },
+      {
+        id: 2,
+        level: "B1+",
+        title: "Daily Hustle",
+        subtitle: "Work, Money & Plans",
+        targetWpm: 120,
+        drills: [
+          {
+            category: "Work Grind",
+            sentence: "Work has been super hectic lately, I barely have time to breathe.",
+            spanish: "El trabajo ha estado súper agitado últimamente, apenas tengo tiempo para respirar.",
+            phonetics: "Work's bin super hectic lately, I barely have time ta breathe.",
+            tip: "Contract 'Work has been' to 'Work's bin'. Stress 'HECTIC' and 'BARELY'."
+          },
+          {
+            category: "Making Plans",
+            sentence: "I'm down to go tonight, just let me know what time you're leaving.",
+            spanish: "Me apunto para ir esta noche, solo avísame a qué hora sales.",
+            phonetics: "I'm down ta go tonight, jus' lemme know what time yer leavin'.",
+            tip: "'I'm down' = I'm in/agree. 'Let me' reduces to 'lemme'."
+          },
+          {
+            category: "Broke / Budget",
+            sentence: "I'm kinda tight on cash until payday, so let's keep it low-key.",
+            spanish: "Estoy algo corto de dinero hasta el día de pago, así que hagamos algo tranquilo.",
+            phonetics: "I'm kinda tight on cash until payday, so let's keep it low-key.",
+            tip: "'Kind of' becomes 'kinda'. 'Low-key' means relaxed and inexpensive."
+          },
+          {
+            category: "Flaking / Delay",
+            sentence: "Something came up at the last minute, so I'm gonna have to rain check.",
+            spanish: "Surgió algo a último minuto, así que tendré que dejarlo para otra ocasión.",
+            phonetics: "Somethin' came up at the last minute, so I'm gonna hafta rain check.",
+            tip: "'Going to have to' turns into 'gonna hafta'."
+          },
+          {
+            category: "Running Late",
+            sentence: "Traffic is completely backed up right now—I'll be there in ten.",
+            spanish: "El tráfico está totalmente trancado ahora mismo—llego en diez.",
+            phonetics: "Traffic's completely backed up right now—I'll be there in ten.",
+            tip: "Link 'backed-up' cleanly and drop 'minutes' after 'ten' like a native."
+          },
+          {
+            category: "Side Hustle",
+            sentence: "He's been grinding nonstop on his side hustle to pay off his debt.",
+            spanish: "Él ha estado trabajando sin parar en su negocio extra para pagar su deuda.",
+            phonetics: "He's bin grindin' nonstop on his side hustle ta pay off his debt.",
+            tip: "'Grinding' means working hard. Remember 'debt' has a silent 'b' (det)."
+          },
+          {
+            category: "Decision",
+            sentence: "Honestly, I don't really care either way—whatever works best for you.",
+            spanish: "Honestamente, me da igual de cualquier forma—lo que te funcione mejor a ti.",
+            phonetics: "Honestly, I don't really care either way—whatever works best for ya.",
+            tip: "Flow smoothly through 'whatever works best for ya'."
+          },
+          {
+            category: "Favor",
+            sentence: "Could you do me a solid and cover my shift on Friday afternoon?",
+            spanish: "¿Podrías hacerme un gran favor y cubrir mi turno el viernes por la tarde?",
+            phonetics: "Couldja do me a solid an' cover my shift on Friday afternoon?",
+            tip: "'Could you' becomes 'Couldja'. 'Do me a solid' = do me a big favor."
+          },
+          {
+            category: "Weekend",
+            sentence: "I'm dead tired from this week, so I'm just gonna chill at home.",
+            spanish: "Estoy muerto de cansancio por esta semana, así que solo me relajaré en casa.",
+            phonetics: "I'm dead tired from this week, so I'm jus' gonna chill at home.",
+            tip: "Punch 'DEAD tired' and glide smoothly into 'gonna chill at home'."
+          }
+        ]
+      },
+      {
+        id: 3,
+        level: "B2",
+        title: "Past Drama",
+        subtitle: "Stories & Reactions",
+        targetWpm: 130,
+        drills: [
+          {
+            category: "Storytelling",
+            sentence: "So get this—right as we were walking out, the whole power went out.",
+            spanish: "Escucha esto—justo cuando íbamos saliendo, se fue toda la luz.",
+            phonetics: "So get this—right as we were walkin' out, the whole power went out.",
+            tip: "'Get this' hooks the listener. Link 'walkin'-out' and 'went-out'."
+          },
+          {
+            category: "Regret",
+            sentence: "I should've listened to my gut instead of rushing into that deal.",
+            spanish: "Debí haberle hecho caso a mi instinto en vez de apresurarme en ese trato.",
+            phonetics: "I shoulda listened ta my gut instead of rushin' inta that deal.",
+            tip: "'Should have' reduces to 'shoulda'. 'Gut' means intuition."
+          },
+          {
+            category: "Shock",
+            sentence: "It caught me completely off guard when he showed up unannounced.",
+            spanish: "Me tomó completamente desprevenido cuando apareció sin avisar.",
+            phonetics: "It caught me completely off guard when he showed up unannounced.",
+            tip: "Stress 'off GUARD' and 'showed UP'. Keep your cadence crisp."
+          },
+          {
+            category: "Awkward Moment",
+            sentence: "Things got super awkward after she brought up what happened last summer.",
+            spanish: "Las cosas se pusieron súper incómodas después de que ella mencionó lo que pasó el verano pasado.",
+            phonetics: "Things got super awkward after she brought up what happened last summer.",
+            tip: "'Brought up' means mentioned a topic. Connect 'brought-up' smoothly."
+          },
+          {
+            category: "Close Call",
+            sentence: "We barely made it to the gate before they closed the boarding doors.",
+            spanish: "Apenas logramos llegar a la puerta antes de que cerraran el abordaje.",
+            phonetics: "We barely made it ta the gate before they closed the boardin' doors.",
+            tip: "Flap the 't' in 'made it' so it sounds like 'may-dit'."
+          },
+          {
+            category: "Realization",
+            sentence: "Looking back on it now, that mistake was actually a blessing in disguise.",
+            spanish: "Mirándolo en retrospectiva ahora, ese error fue en realidad una bendición disfrazada.",
+            phonetics: "Lookin' back on it now, that mistake was actually a blessin' in disguise.",
+            tip: "Link 'back-on-it' as a single rhythmic beat."
+          },
+          {
+            category: "Excuse",
+            sentence: "My phone died right in the middle of the call, I wasn't ignoring you.",
+            spanish: "Se me apagó el teléfono justo en medio de la llamada, no te estaba ignorando.",
+            phonetics: "My phone died right in the middle of the call, I wasn't ignorin' ya.",
+            tip: "Strong contrast on 'I WASN'T ignorin' ya'."
+          },
+          {
+            category: "Gossip / Tea",
+            sentence: "Wait a second, don't leave me hanging—spill the tea, what happened next?",
+            spanish: "Espera un segundo, no me dejes con la duda—cuenta el chisme, ¿qué pasó después?",
+            phonetics: "Wait a second, don't leave me hangin'—spill the tea, what happened next?",
+            tip: "'Wait a' sounds like 'Way-da'. 'Spill the tea' = tell the gossip."
+          },
+          {
+            category: "Relief",
+            sentence: "Thank goodness everything worked out in the end, because I was stressing hard.",
+            spanish: "Menos mal que todo salió bien al final, porque estaba súper estresado.",
+            phonetics: "Thank goodness everything worked out in the end, cuz I was stressin' hard.",
+            tip: "Reduce 'because' to 'cuz' for natural conversational flow."
+          }
+        ]
+      },
+      {
+        id: 4,
+        level: "B2+",
+        title: "Real Talk",
+        subtitle: "Opinions & Thinking Out Loud",
+        targetWpm: 140,
+        drills: [
+          {
+            category: "Opinion",
+            sentence: "To be completely honest with you, I think that whole idea is overrated.",
+            spanish: "Para serte completamente honesto, creo que toda esa idea está sobrevalorada.",
+            phonetics: "Ta be completely honest with ya, I think that whole idea'z overrated.",
+            tip: "Glide through 'To be completely honest with ya' as one warm-up phrase."
+          },
+          {
+            category: "Disagreeing",
+            sentence: "I see where you're coming from, but I'm not entirely sold on that.",
+            spanish: "Entiendo tu punto de vista, pero no estoy del todo convencido con eso.",
+            phonetics: "I see where yer comin' from, but I'm not entirely sold on that.",
+            tip: "'Sold on' = convinced by. Stress 'NOT' and 'SOLD'."
+          },
+          {
+            category: "Bottom Line",
+            sentence: "At the end of the day, actions speak way louder than empty promises.",
+            spanish: "Al final del día, las acciones hablan mucho más fuerte que las promesas vacías.",
+            phonetics: "At the end of the day, actions speak way louder than empty promises.",
+            tip: "Link 'At-the-end-of-the-day' quickly without pausing between words."
+          },
+          {
+            category: "Skepticism",
+            sentence: "Something about his story just doesn't add up—it sounds pretty sketchy.",
+            spanish: "Algo en su historia simplemente no cuadra—suena bastante sospechoso.",
+            phonetics: "Somethin' about his story jus' doesn't add up—it sounds pretty sketchy.",
+            tip: "'Add up' = make sense. 'Sketchy' = suspicious or shady."
+          },
+          {
+            category: "Priorities",
+            sentence: "You gotta pick your battles instead of sweating the small stuff every day.",
+            spanish: "Tienes que elegir tus batallas en lugar de estresarte por pequeñeces todos los días.",
+            phonetics: "Ya gotta pick yer battles instead of sweatin' the small stuff every day.",
+            tip: "'Sweating the small stuff' = worrying about tiny problems."
+          },
+          {
+            category: "Agreement",
+            sentence: "You hit the nail right on the head—that's literally what I've been saying.",
+            spanish: "Diste justo en el clavo—eso es literalmente lo que he estado diciendo.",
+            phonetics: "Ya hit the nail right on the head—that's literally what I've bin sayin'.",
+            tip: "Keep 'what I've been saying' tightly connected."
+          },
+          {
+            category: "Perspective",
+            sentence: "Don't take this the wrong way, but you might be overthinking the situation.",
+            spanish: "No lo tomes a mal, pero puede que estés sobrepensando la situación.",
+            phonetics: "Don't take this the wrong way, but ya might be overthinkin' the situation.",
+            tip: "Soften the tone on 'Don't take this the wrong way' before delivering the truth."
+          },
+          {
+            category: "Reality Check",
+            sentence: "It is what it is—there's no point crying over spilled milk now.",
+            spanish: "Es lo que es—no tiene sentido llorar sobre la leche derramada ahora.",
+            phonetics: "It iz what it iz—there's no point cryin' over spilled milk now.",
+            tip: "Link 'It-iz-what-it-iz' with smooth flap T's ('Idiz wudidiz')."
+          },
+          {
+            category: "Boundary",
+            sentence: "I'm all for helping out, as long as nobody tries to take advantage of me.",
+            spanish: "Estoy totalmente a favor de ayudar, siempre y cuando nadie intente aprovecharse de mí.",
+            phonetics: "I'm all for helpin' out, as long as nobody tries ta take advantage of me.",
+            tip: "'I'm all for' = I strongly support. Link 'helpin'-out' and 'advantage-of-me'."
+          }
+        ]
+      },
+      {
+        id: 5,
+        level: "C1",
+        title: "Native Flow",
+        subtitle: "Fast Reductions, Idioms & Nuance",
+        targetWpm: 150,
+        drills: [
+          {
+            category: "C1 Reduction",
+            sentence: "I would've called you back sooner, had I known you were waiting on me.",
+            spanish: "Te habría devuelto la llamada antes si hubiera sabido que me estabas esperando.",
+            phonetics: "I woulda calledja back sooner, had I known ya were waitin' on me.",
+            tip: "Notice the inverted conditional 'had I known' + fast 'woulda calledja'."
+          },
+          {
+            category: "C1 Idiom",
+            sentence: "He tends to beat around the bush whenever you ask him for a straight answer.",
+            spanish: "Él tiende a irse por las ramas cada vez que le pides una respuesta directa.",
+            phonetics: "He tends ta beat around the bush whenever ya ask him for a straight answer.",
+            tip: "'Beat around the bush' = avoid getting to the point."
+          },
+          {
+            category: "C1 Nuance",
+            sentence: "Regardless of how things pan out, at least we gave it our best shot.",
+            spanish: "Independientemente de cómo salgan las cosas, al menos dimos nuestro mejor esfuerzo.",
+            phonetics: "Regardless of how things pan out, at least we gave it our best shot.",
+            tip: "'Pan out' = turn out / succeed. Link 'gave-it-our'."
+          },
+          {
+            category: "C1 Hustle",
+            sentence: "She's been burning the candle at both ends trying to get this startup off the ground.",
+            spanish: "Ella ha estado trabajando día y noche sin descanso tratando de sacar adelante esta startup.",
+            phonetics: "She's bin burnin' the candle at both ends tryna get this startup off the ground.",
+            tip: "Keep a rapid, driven cadence through 'tryna get this startup off the ground'."
+          },
+          {
+            category: "C1 Street Smart",
+            sentence: "If you ask me, they're cutting corners just to make a quick buck.",
+            spanish: "Si me preguntas a mí, están tomando atajos de mala calidad solo para ganar dinero rápido.",
+            phonetics: "If ya ask me, they're cuttin' corners jus' ta make a quick buck.",
+            tip: "'Cutting corners' = doing something cheaply/poorly. 'Quick buck' = fast money."
+          },
+          {
+            category: "C1 Skepticism",
+            sentence: "Take everything he says with a grain of salt—he loves to exaggerate.",
+            spanish: "Toma todo lo que dice con pinzas—le encanta exagerar.",
+            phonetics: "Take everything he says with a grain of salt—he loves ta exaggerate.",
+            tip: "Link 'with-a-grain-of-salt' into one smooth rhythmic phrase."
+          },
+          {
+            category: "C1 Pivot",
+            sentence: "We're gonna have to play it by ear since the schedule isn't set in stone yet.",
+            spanish: "Tendremos que improvisar sobre la marcha ya que el horario aún no está escrito en piedra.",
+            phonetics: "We're gonna hafta play it by ear since the schedule isn't set in stone yet.",
+            tip: "'Play it by ear' = improvise. 'Set in stone' = permanently fixed."
+          },
+          {
+            category: "C1 Climax",
+            sentence: "That was hands down the craziest plot twist I've ever seen in my life.",
+            spanish: "Ese fue sin duda el giro de trama más loco que he visto en mi vida.",
+            phonetics: "That was hands down the craziest plot twist I've ever seen in my life.",
+            tip: "'Hands down' = without a doubt. Punch 'HANDS DOWN' and 'CRAZIEST'."
+          },
+          {
+            category: "C1 Mastery",
+            sentence: "Once you get the hang of native rhythm, speaking effortlessly becomes second nature.",
+            spanish: "Una vez que le agarras el truco al ritmo nativo, hablar sin esfuerzo se vuelve algo natural.",
+            phonetics: "Once ya get the hang of native rhythm, speakin' effortlessly becomes second nature.",
+            tip: "'Get the hang of' = master the skill. Deliver this final C1 line with total confidence!"
+          }
+        ]
+      }
+    ];
+
+    /**
+     * 2. APPLICATION STATE & LOCALSTORAGE PERSISTENCE
+     */
+    const STORAGE_KEY = 'street_english_pro_v2';
+    let state = {
+      currentStageIdx: 0,
+      currentDrillIdx: 0,
+      masteredMap: {}, // e.g., { "0-0": true, "0-1": true }
+      xp: 0,
+      streak: 0,
+      showSpanish: true,
+      blindMode: false,
+      autoPlay: true,
+      strictness: 'standard',
+      voiceURI: '',
+      apiKey: '',
+      customTopic: '',
+      aiGeneratedDrills: {} // keyed by stageIdx -> array of drills
+    };
+
+    // Speech Recognition & Synthesis Runtime Variables
+    let recognition = null;
+    let isRecording = false;
+    let recordingStartTime = 0;
+    let finalTranscriptBuffer = '';
+    let availableVoices = [];
+
+    /**
+     * 3. INITIALIZATION & PWA SETUP
+     */
+    window.onload = function () {
+      loadState();
+      setupInlinePWAManifest();
+      populatePWAPreviewModal();
+      initSpeechSynthesis();
+      initSpeechRecognition();
+      renderStageTabs();
+      loadCurrentDrill(false);
+      updateHeaderStats();
+      lucide.createIcons();
+    };
+
+    function loadState() {
+      try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          state = { ...state, ...parsed };
+        }
+      } catch (e) {
+        console.warn('Could not load saved state:', e);
+      }
+
+      // Sync UI controls with loaded state
+      document.getElementById('lang-toggle-label').textContent = state.showSpanish ? 'ES: ON' : 'ES: OFF';
+      document.getElementById('autoplay-toggle').checked = state.autoPlay;
+      document.getElementById('strictness-select').value = state.strictness;
+      document.getElementById('gemini-api-key').value = state.apiKey || '';
+      document.getElementById('custom-topic-input').value = state.customTopic || '';
+      if (state.apiKey) {
+        document.getElementById('ai-active-dot').classList.remove('hidden');
+      }
+    }
+
+    function saveState() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      } catch (e) {
+        console.warn('Could not save state:', e);
+      }
+    }
+
+    /**
+     * 4. DYNAMIC SINGLE-FILE PWA MANIFEST & SERVICE WORKER GENERATOR
+     */
+    function getManifestContent() {
+      return JSON.stringify({
+        name: "StreetEnglish AI Pro",
+        short_name: "StreetEnglish",
+        description: "B1 to C1 American Street Slang & Listen-and-Repeat Fluency Coach",
+        start_url: "./index.html",
+        display: "standalone",
+        background_color: "#0a0a0c",
+        theme_color: "#00ff66",
+        icons: [
+          {
+            src: "https://placehold.co/192x192/0a0a0c/00ff66?text=JX",
+            sizes: "192x192",
+            type: "image/png"
+          },
+          {
+            src: "https://placehold.co/512x512/0a0a0c/00ff66?text=JX",
+            sizes: "512x512",
+            type: "image/png"
+          }
+        ]
+      }, null, 2);
+    }
+
+    function getServiceWorkerContent() {
+      return `const CACHE_NAME = 'street-english-pro-v1';
+const ASSETS = ['./', './index.html', './manifest.json'];
+
+self.addEventListener('install', (event) => {
+  event.waitUntil(
+    caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS))
+  );
+  self.skipWaiting();
+});
+
+self.addEventListener('activate', (event) => {
+  event.waitUntil(self.clients.claim());
+});
+
+self.addEventListener('fetch', (event) => {
+  event.respondWith(
+    caches.match(event.request).then((cached) => cached || fetch(event.request))
+  );
+});`;
+    }
+
+    function setupInlinePWAManifest() {
+      try {
+        const blob = new Blob([getManifestContent()], { type: 'application/json' });
+        const manifestURL = URL.createObjectURL(blob);
+        const link = document.createElement('link');
+        link.rel = 'manifest';
+        link.href = manifestURL;
+        document.head.appendChild(link);
+      } catch (e) {
+        console.warn('Inline manifest injection skipped:', e);
+      }
+    }
+
+    function populatePWAPreviewModal() {
+      document.getElementById('manifest-preview').textContent = getManifestContent();
+      document.getElementById('sw-preview').textContent = getServiceWorkerContent();
+    }
+
+    function downloadTextFile(filename, content) {
+      const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      showToast(`Downloaded ${filename}`);
+    }
+
+    /**
+     * 5. WEB SPEECH SYNTHESIS (AMERICAN ENGLISH TTS)
+     */
+    function initSpeechSynthesis() {
+      if (!('speechSynthesis' in window)) return;
+
+      const loadVoices = () => {
+        const voices = window.speechSynthesis.getVoices();
+        // Prioritize American English voices
+        availableVoices = voices.filter(v => v.lang.includes('en-US') || v.lang.includes('en_US'));
+        if (availableVoices.length === 0) {
+          availableVoices = voices.filter(v => v.lang.startsWith('en'));
+        }
+
+        const select = document.getElementById('voice-select');
+        select.innerHTML = '<option value="">Auto-Select Best US Voice</option>';
+        availableVoices.forEach(voice => {
+          const opt = document.createElement('option');
+          opt.value = voice.voiceURI;
+          opt.textContent = `${voice.name} (${voice.lang})`;
+          if (voice.voiceURI === state.voiceURI) opt.selected = true;
+          select.appendChild(opt);
         });
+      };
 
-        function openSettings() {
-            document.getElementById('api-key-input').value = apiKey;
-            document.getElementById('settings-modal').classList.remove('hidden');
+      loadVoices();
+      window.speechSynthesis.onvoiceschanged = loadVoices;
+    }
+
+    function getSelectedUSVoice() {
+      if (!availableVoices.length) return null;
+      if (state.voiceURI) {
+        const match = availableVoices.find(v => v.voiceURI === state.voiceURI);
+        if (match) return match;
+      }
+      // Prefer natural-sounding Google/Apple/Microsoft US English voices
+      const preferred = availableVoices.find(v =>
+        /Google US English|Samantha|Alex|Aaron|Microsoft Guy|Microsoft Aria|Natural/i.test(v.name)
+      );
+      return preferred || availableVoices[0];
+    }
+
+    function speakTargetSentence(rate = 1.0) {
+      if (!('speechSynthesis' in window)) {
+        showToast('Text-to-Speech not supported in this browser.');
+        return;
+      }
+
+      window.speechSynthesis.cancel();
+      const drill = getCurrentDrill();
+      const utterance = new SpeechSynthesisUtterance(drill.sentence);
+      utterance.lang = 'en-US';
+      utterance.rate = rate;
+      utterance.pitch = 1.0;
+
+      const voice = getSelectedUSVoice();
+      if (voice) utterance.voice = voice;
+
+      const normalBtn = document.getElementById('play-normal-btn');
+      const slowBtn = document.getElementById('play-slow-btn');
+
+      utterance.onstart = () => {
+        if (rate >= 1.0) {
+          normalBtn.classList.add('ring-2', 'ring-white');
+        } else {
+          slowBtn.classList.add('ring-2', 'ring-amber-400');
+        }
+      };
+
+      utterance.onend = () => {
+        normalBtn.classList.remove('ring-2', 'ring-white');
+        slowBtn.classList.remove('ring-2', 'ring-amber-400');
+      };
+
+      window.speechSynthesis.speak(utterance);
+    }
+
+    /**
+     * 6. WEB SPEECH RECOGNITION (LISTEN & REPEAT ENGINE)
+     */
+    function initSpeechRecognition() {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRecognition) {
+        document.getElementById('mic-status-text').textContent = 'Speech Recognition unavailable — use keyboard test below';
+        document.getElementById('manual-input-box').classList.remove('hidden');
+        return;
+      }
+
+      recognition = new SpeechRecognition();
+      recognition.lang = 'en-US';
+      recognition.interimResults = true;
+      recognition.maxAlternatives = 1;
+      recognition.continuous = false;
+
+      recognition.onstart = () => {
+        isRecording = true;
+        recordingStartTime = Date.now();
+        finalTranscriptBuffer = '';
+        updateMicUIState('recording');
+      };
+
+      recognition.onresult = (event) => {
+        let interim = '';
+        for (let i = event.resultIndex; i < event.results.length; ++i) {
+          if (event.results[i].isFinal) {
+            finalTranscriptBuffer += event.results[i][0].transcript;
+          } else {
+            interim += event.results[i][0].transcript;
+          }
+        }
+        const liveText = (finalTranscriptBuffer || interim).trim();
+        if (liveText) {
+          document.getElementById('mic-status-text').textContent = `"${liveText}..."`;
+        }
+      };
+
+      recognition.onerror = (event) => {
+        isRecording = false;
+        updateMicUIState('idle');
+        if (event.error === 'no-speech') {
+          showToast("Didn't hear anything. Tap the mic and speak clearly!");
+        } else if (event.error === 'not-allowed') {
+          showToast('Microphone permission denied. Use keyboard input below.');
+          document.getElementById('manual-input-box').classList.remove('hidden');
+        } else {
+          showToast(`Mic error (${event.error}). Try again.`);
+        }
+      };
+
+      recognition.onend = () => {
+        if (!isRecording) return;
+        isRecording = false;
+        updateMicUIState('idle');
+
+        const elapsedSeconds = Math.max(0.8, (Date.now() - recordingStartTime) / 1000);
+        const spokenText = finalTranscriptBuffer.trim();
+
+        if (!spokenText) {
+          document.getElementById('mic-status-text').textContent = 'No speech detected — tap mic and try again';
+          return;
         }
 
-        function closeSettings() {
-            document.getElementById('settings-modal').classList.add('hidden');
-        }
+        evaluateAttempt(spokenText, elapsedSeconds);
+      };
+    }
 
-        function saveApiKey() {
-            apiKey = document.getElementById('api-key-input').value.trim();
-            localStorage.setItem('gemini_api_key', apiKey);
-            closeSettings();
-            showNotification("API Key saved successfully!");
-        }
+    function toggleRecording() {
+      if (!recognition) {
+        toggleManualInput();
+        return;
+      }
 
-        function openStagesModal() {
-            const container = document.getElementById('stages-list-container');
-            container.innerHTML = '';
-            curriculum.forEach(stage => {
-                const isCurrent = stage.id === currentStageId;
-                const isCompleted = stage.id < currentStageId;
-                container.innerHTML += `
-                    <div class="p-4 rounded-2xl border ${isCurrent ? 'border-neon-green bg-neon-green/5' : 'border-dark-600 bg-dark-900'} flex items-center justify-between">
-                        <div>
-                            <div class="flex items-center gap-2">
-                                <span class="w-6 h-6 rounded-full ${isCurrent ? 'bg-neon-green text-black' : 'bg-dark-700 text-gray-300'} text-xs font-bold flex items-center justify-center">${stage.id}</span>
-                                <h4 class="font-bold text-white text-sm">${stage.title}</h4>
-                            </div>
-                            <p class="text-xs text-gray-400 mt-1">${stage.desc}</p>
-                        </div>
-                        <div>
-                            ${isCompleted ? '<span class="text-xs text-neon-green font-bold">Completed</span>' : isCurrent ? '<span class="text-xs bg-neon-green/20 text-neon-green px-2 py-1 rounded font-bold">Active</span>' : '<span class="text-xs text-gray-500">Locked</span>'}
-                        </div>
-                    </div>
-                `;
-            });
-            document.getElementById('stages-modal').classList.remove('hidden');
-        }
+      window.speechSynthesis.cancel();
 
-        function closeStagesModal() {
-            document.getElementById('stages-modal').classList.add('hidden');
+      if (isRecording) {
+        recognition.stop();
+      } else {
+        try {
+          recognition.start();
+        } catch (e) {
+          recognition.stop();
+          setTimeout(() => recognition.start(), 200);
         }
+      }
+    }
 
-        function renderStagePills() {
-            const container = document.getElementById('stage-pills');
-            container.innerHTML = '';
-            curriculum.forEach(stage => {
-                const active = stage.id === currentStageId;
-                container.innerHTML += `
-                    <button onclick="switchStage(${stage.id})" class="px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition border ${active ? 'bg-neon-green text-black border-neon-green font-bold' : 'bg-dark-700 text-gray-300 border-dark-600 hover:bg-dark-600'}">
-                        Stage ${stage.id}: ${stage.title}
-                    </button>
-                `;
-            });
-        }
+    function updateMicUIState(mode) {
+      const micBtn = document.getElementById('mic-btn');
+      const statusDot = document.getElementById('mic-status-dot');
+      const statusText = document.getElementById('mic-status-text');
+      const visualizer = document.getElementById('recording-visualizer');
 
-        function switchStage(id) {
-            currentStageId = id;
-            currentTurn = 1;
-            updateHeader();
-            renderStagePills();
-            const stage = curriculum.find(s => s.id === id);
-            document.getElementById('stage-desc').innerText = stage.desc;
-            
-            // Add AI welcome for new stage
-            appendChatMessage("AI", `Alright, we've stepped into Stage ${stage.id}: ${stage.title}. ${stage.desc} Give me your best shot!`);
-        }
+      if (mode === 'recording') {
+        micBtn.classList.add('recording-pulse', 'from-rose-500', 'to-red-600', 'text-white');
+        micBtn.classList.remove('from-neon', 'to-emerald-500', 'text-obsidian');
+        statusDot.className = 'w-2.5 h-2.5 rounded-full bg-rose-500 animate-ping';
+        statusText.textContent = 'Listening... Speak the full sentence now!';
+        visualizer.classList.remove('hidden');
+        visualizer.classList.add('flex');
+      } else {
+        micBtn.classList.remove('recording-pulse', 'from-rose-500', 'to-red-600', 'text-white');
+        micBtn.classList.add('from-neon', 'to-emerald-500', 'text-obsidian');
+        statusDot.className = 'w-2 h-2 rounded-full bg-neon';
+        statusText.textContent = 'Tap the mic and repeat the phrase';
+        visualizer.classList.add('hidden');
+        visualizer.classList.remove('flex');
+      }
+    }
 
-        function updateHeader() {
-            const stage = curriculum.find(s => s.id === currentStageId);
-            document.getElementById('header-stage-title').innerText = `Stage ${stage.id}: ${stage.title}`;
-            document.getElementById('header-progress-text').innerText = `${currentTurn}/${stage.goalTurns} Turns`;
-        }
+    /**
+     * 7. FLUENCY, WORD ACCURACY & WPM SPEED EVALUATION ENGINE
+     */
+    function normalizeWords(text) {
+      // Expand common contractions so "what's" matches "what is" or "whats" fairly
+      const cleaned = text
+        .toLowerCase()
+        .replace(/—/g, ' ')
+        .replace(/’/g, "'")
+        .replace(/\bwhat's\b/g, 'whats')
+        .replace(/\bhow's\b/g, 'hows')
+        .replace(/\bit's\b/g, 'its')
+        .replace(/\bi'm\b/g, 'im')
+        .replace(/\byou're\b/g, 'youre')
+        .replace(/\bdon't\b/g, 'dont')
+        .replace(/\bcan't\b/g, 'cant')
+        .replace(/\bwon't\b/g, 'wont')
+        .replace(/\bgonna\b/g, 'going to')
+        .replace(/\bwanna\b/g, 'want to')
+        .replace(/\bgotta\b/g, 'got to')
+        .replace(/\blemme\b/g, 'let me')
+        .replace(/\btryna\b/g, 'trying to')
+        .replace(/\bkinda\b/g, 'kind of')
+        .replace(/\bshoulda\b/g, 'should have')
+        .replace(/\bwoulda\b/g, 'would have')
+        .replace(/[^a-z0-9\s']/g, '')
+        .replace(/'/g, '')
+        .trim();
 
-        function speakText(text) {
-            if ('speechSynthesis' in window) {
-                window.speechSynthesis.cancel();
-                const utterance = new SpeechSynthesisUtterance(text);
-                utterance.lang = 'en-US';
-                utterance.rate = 1.0;
-                // Try to pick an American voice if available
-                const voices = window.speechSynthesis.getVoices();
-                const usVoice = voices.find(v => v.lang.includes('en-US') && (v.name.includes('Natural') || v.name.includes('Google') || v.name.includes('Samantha')));
-                if (usVoice) utterance.voice = usVoice;
-                window.speechSynthesis.speak(utterance);
+      return cleaned ? cleaned.split(/\s+/) : [];
+    }
+
+    function evaluateAttempt(spokenText, elapsedSeconds) {
+      const drill = getCurrentDrill();
+      const stage = CURRICULUM[state.currentStageIdx];
+
+      const targetRawTokens = drill.sentence.replace(/—/g, ' ').trim().split(/\s+/);
+      const targetNorm = normalizeWords(drill.sentence);
+      const spokenNorm = normalizeWords(spokenText);
+
+      // Word-by-word matching with frequency/order tolerance
+      const spokenPool = [...spokenNorm];
+      let matchedCount = 0;
+
+      const wordResults = targetRawTokens.map(rawToken => {
+        const normTokenWords = normalizeWords(rawToken);
+        let isMatched = false;
+
+        if (normTokenWords.length === 0) {
+          isMatched = true;
+        } else {
+          // Check if all normalized parts of this token exist in spokenPool
+          const allFound = normTokenWords.every(w => {
+            const idx = spokenPool.findIndex(sw => sw === w || levenshtein(sw, w) <= 1);
+            if (idx !== -1) {
+              spokenPool.splice(idx, 1);
+              return true;
             }
+            return false;
+          });
+          isMatched = allFound;
         }
 
-        function playCoachIntro() {
-            const lastAiMsg = document.querySelector('#chat-container > div:last-child p');
-            if (lastAiMsg) {
-                speakText(lastAiMsg.innerText);
-            }
+        if (isMatched) matchedCount++;
+        return { word: rawToken, matched: isMatched };
+      });
+
+      const accuracy = Math.round((matchedCount / Math.max(1, targetRawTokens.length)) * 100);
+
+      // Calculate conversational pace (WPM)
+      // Subtract ~0.6s browser mic buffer so short phrases don't get penalized unfairly
+      const effectiveSpeechSeconds = Math.max(1.0, elapsedSeconds - 0.55);
+      const wpm = Math.round((spokenNorm.length / effectiveSpeechSeconds) * 60);
+
+      // Determine thresholds based on Coach Jax strictness setting
+      let minAccuracy = 80;
+      let minWpm = Math.max(85, stage.targetWpm - 30);
+
+      if (state.strictness === 'strict') {
+        minAccuracy = 88;
+        minWpm = Math.max(105, stage.targetWpm - 15);
+      } else if (state.strictness === 'relaxed') {
+        minAccuracy = 70;
+        minWpm = 50;
+      }
+
+      const passedAccuracy = accuracy >= minAccuracy;
+      const passedSpeed = wpm >= minWpm;
+      const passed = passedAccuracy && passedSpeed;
+
+      renderEvaluationResult({
+        spokenText,
+        accuracy,
+        wpm,
+        minAccuracy,
+        minWpm,
+        passed,
+        passedAccuracy,
+        passedSpeed,
+        wordResults
+      });
+    }
+
+    function renderEvaluationResult(res) {
+      const panel = document.getElementById('evaluation-panel');
+      panel.classList.remove('hidden');
+
+      document.getElementById('score-accuracy').textContent = `${res.accuracy}%`;
+      document.getElementById('score-accuracy').className = `text-lg sm:text-xl font-black font-mono ${res.passedAccuracy ? 'text-neon' : 'text-rose-400'}`;
+
+      document.getElementById('score-wpm').textContent = `${res.wpm} WPM`;
+      document.getElementById('score-wpm').className = `text-lg sm:text-xl font-black font-mono ${res.passedSpeed ? 'text-white' : 'text-amber-400'}`;
+
+      const verdictEl = document.getElementById('score-verdict');
+      const feedbackBox = document.getElementById('coach-feedback-box');
+      const iconWrap = document.getElementById('feedback-icon-wrap');
+      const titleEl = document.getElementById('feedback-title');
+      const msgEl = document.getElementById('feedback-message');
+      const msgEsEl = document.getElementById('feedback-message-es');
+      const nextBtn = document.getElementById('next-drill-btn');
+      const coachDirective = document.getElementById('coach-directive');
+
+      // Render word-by-word pills
+      const diffContainer = document.getElementById('word-diff-container');
+      diffContainer.innerHTML = res.wordResults.map(item => {
+        if (item.matched) {
+          return `<span class="px-2 py-0.5 rounded-md bg-neon/15 text-neon border border-neon/30">${item.word}</span>`;
+        } else {
+          return `<span class="px-2 py-0.5 rounded-md bg-rose-500/15 text-rose-400 border border-rose-500/30 underline decoration-wavy">${item.word}</span>`;
         }
+      }).join('');
 
-        function setupSpeechRecognition() {
-            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-            if (SpeechRecognition) {
-                recognition = new SpeechRecognition();
-                recognition.lang = 'en-US';
-                recognition.interimResults = false;
-                recognition.maxAlternatives = 1;
+      document.getElementById('raw-transcript').textContent = res.spokenText;
 
-                recognition.onstart = () => {
-                    isListening = true;
-                    document.getElementById('mic-pulse').classList.remove('hidden');
-                    document.getElementById('speech-status').innerText = "Listening to your street English...";
-                    document.getElementById('mic-btn').classList.add('border-neon-green');
-                };
+      if (res.passed) {
+        // MASTERED!
+        verdictEl.textContent = 'MASTERED';
+        verdictEl.className = 'text-xs sm:text-sm font-extrabold text-neon mt-1 uppercase';
 
-                recognition.onresult = (event) => {
-                    const speechResult = event.results[0][0].transcript;
-                    document.getElementById('user-input').value = speechResult;
-                    document.getElementById('speech-status').innerText = "Captured! Tap send.";
-                    stopSpeechRecognition();
-                    // Auto send after speech
-                    setTimeout(() => sendUserAnswer(), 400);
-                };
+        feedbackBox.className = 'rounded-xl p-3.5 border bg-neon/10 border-neon/40 flex items-start gap-3';
+        iconWrap.className = 'p-2 rounded-lg bg-neon/20 text-neon shrink-0 mt-0.5';
+        iconWrap.innerHTML = '<i data-lucide="check-circle-2" class="w-4 h-4"></i>';
 
-                recognition.onerror = (event) => {
-                    console.error("Speech recognition error", event.error);
-                    stopSpeechRecognition();
-                    document.getElementById('speech-status').innerText = "Mic error. Try typing.";
-                };
+        titleEl.className = 'text-xs font-extrabold uppercase tracking-wider text-neon mb-0.5';
+        titleEl.textContent = 'Clean Native Delivery! (+25 XP)';
 
-                recognition.onend = () => {
-                    stopSpeechRecognition();
-                };
-            } else {
-                document.getElementById('speech-status').innerText = "Speech recognition not supported in browser. Use keyboard.";
-            }
+        msgEl.textContent = `Spot on! ${res.accuracy}% accuracy at ${res.wpm} WPM. That sounded smooth and natural. Ready for the next phrase?`;
+        msgEsEl.textContent = `¡Excelente! ${res.accuracy}% de precisión a ${res.wpm} palabras por minuto. Sonó fluido y natural. ¿Listo para la siguiente frase?`;
+
+        coachDirective.textContent = '"Boom! You nailed the rhythm. Hit Next Phrase to keep leveling up!"';
+        nextBtn.classList.remove('hidden');
+
+        // Record Mastery & XP if not already mastered
+        const key = `${state.currentStageIdx}-${state.currentDrillIdx}`;
+        if (!state.masteredMap[key]) {
+          state.masteredMap[key] = true;
+          state.xp += 25;
+          state.streak += 1;
+          saveState();
+          renderStageTabs();
+          updateHeaderStats();
         }
+      } else {
+        // REPEAT REQUIRED
+        verdictEl.textContent = 'REPEAT';
+        verdictEl.className = 'text-xs sm:text-sm font-extrabold text-amber-400 mt-1 uppercase';
 
-        function toggleSpeechRecognition() {
-            if (!recognition) {
-                showNotification("Speech recognition not available.");
-                return;
-            }
-            if (isListening) {
-                recognition.stop();
-            } else {
-                try {
-                    recognition.start();
-                } catch(e) {
-                    console.error(e);
-                }
-            }
+        feedbackBox.className = 'rounded-xl p-3.5 border bg-amber-500/10 border-amber-500/30 flex items-start gap-3';
+        iconWrap.className = 'p-2 rounded-lg bg-amber-500/20 text-amber-400 shrink-0 mt-0.5';
+        iconWrap.innerHTML = '<i data-lucide="rotate-ccw" class="w-4 h-4"></i>';
+
+        titleEl.className = 'text-xs font-extrabold uppercase tracking-wider text-amber-400 mb-0.5';
+        nextBtn.classList.add('hidden');
+
+        const missedWords = res.wordResults.filter(w => !w.matched).map(w => w.word.replace(/[.,!?—]/g, ''));
+
+        if (!res.passedAccuracy) {
+          titleEl.textContent = 'Missed Words — Repeat This Phrase!';
+          const missedSample = missedWords.slice(0, 3).join(', ');
+          msgEl.textContent = `You hit ${res.accuracy}% (need ${res.minAccuracy}%). Watch out for: "${missedSample}". Listen again and repeat the entire sentence!`;
+          msgEsEl.textContent = `Lograste ${res.accuracy}% (necesitas ${res.minAccuracy}%). Ojo con: "${missedSample}". Escucha de nuevo y repite toda la oración.`;
+          coachDirective.textContent = '"Not quite! Don\'t skip words—listen at 0.75x and repeat it back to me."';
+        } else {
+          titleEl.textContent = 'Good Words, Too Slow — Pick Up The Pace!';
+          msgEl.textContent = `Your pronunciation was ${res.accuracy}% accurate, but your pace was ${res.wpm} WPM (goal: ${res.minWpm}+ WPM). Link the words together without pausing and repeat!`;
+          msgEsEl.textContent = `Tu pronunciación tuvo ${res.accuracy}% de precisión, pero tu velocidad fue de ${res.wpm} PPM (meta: ${res.minWpm}+ PPM). Une las palabras sin pausar y repite.`;
+          coachDirective.textContent = '"You got the words right, now say it faster like a real American—no robotic pauses!"';
         }
+      }
 
-        function stopSpeechRecognition() {
-            isListening = false;
-            document.getElementById('mic-pulse').classList.add('hidden');
-            document.getElementById('mic-btn').classList.remove('border-neon-green');
-            document.getElementById('speech-status').innerText = "Mic Ready. Tap mic or type.";
+      msgEsEl.style.display = state.showSpanish ? 'block' : 'none';
+      lucide.createIcons();
+    }
+
+    function levenshtein(a, b) {
+      const m = a.length, n = b.length;
+      if (!m) return n;
+      if (!n) return m;
+      const dp = Array.from({ length: m + 1 }, () => new Array(n + 1).fill(0));
+      for (let i = 0; i <= m; i++) dp[i][0] = i;
+      for (let j = 0; j <= n; j++) dp[0][j] = j;
+      for (let i = 1; i <= m; i++) {
+        for (let j = 1; j <= n; j++) {
+          dp[i][j] = a[i - 1] === b[j - 1]
+            ? dp[i - 1][j - 1]
+            : 1 + Math.min(dp[i - 1][j], dp[i][j - 1], dp[i - 1][j - 1]);
         }
+      }
+      return dp[m][n];
+    }
 
-        function appendChatMessage(sender, text) {
-            const container = document.getElementById('chat-container');
-            const isAi = sender === 'AI';
-            
-            const html = `
-                <div class="flex items-start space-x-3 max-w-[85%] ${isAi ? '' : 'ml-auto flex-row-reverse space-x-reverse'} animate-fade-in">
-                    <div class="w-8 h-8 rounded-full ${isAi ? 'bg-neon-green text-black' : 'bg-gray-600 text-white'} font-bold flex items-center justify-center shrink-0 text-xs">${isAi ? 'AI' : 'YOU'}</div>
-                    <div class="${isAi ? 'bg-dark-800 border border-dark-600 rounded-tl-sm text-gray-200' : 'bg-emerald-600 text-white rounded-tr-sm'} rounded-2xl p-4 text-sm shadow-md">
-                        <p>${escapeHtml(text)}</p>
-                        ${isAi ? `
-                        <div class="mt-3 flex items-center justify-between text-xs text-gray-400 border-t border-dark-700 pt-2">
-                            <span class="flex items-center gap-1 text-neon-green font-mono"><i data-lucide="sparkles" class="w-3.5 h-3.5"></i> Coach Feedback</span>
-                            <button onclick="speakText(\`${text.replace(/"/g, '&quot;')}\`)" class="hover:text-white flex items-center gap-1">
-                                <i data-lucide="volume-2" class="w-3.5 h-3.5"></i> Listen
-                            </button>
-                        </div>` : ''}
-                    </div>
-                </div>
-            `;
-            container.innerHTML += html;
-            lucide.createIcons();
-            container.scrollTop = container.scrollHeight;
-        }
+    /**
+     * 8. STAGE & DRILL NAVIGATION
+     */
+    function getStageDrills(stageIdx) {
+      const base = CURRICULUM[stageIdx].drills;
+      const extra = state.aiGeneratedDrills[stageIdx] || [];
+      return [...base, ...extra];
+    }
 
-        async function sendUserAnswer() {
-            const inputEl = document.getElementById('user-input');
-            const text = inputEl.value.trim();
-            if (!text) return;
+    function getCurrentDrill() {
+      const drills = getStageDrills(state.currentStageIdx);
+      return drills[state.currentDrillIdx] || drills[0];
+    }
 
-            inputEl.value = '';
-            appendChatMessage('USER', text);
+    function renderStageTabs() {
+      const container = document.getElementById('stage-tabs');
+      container.innerHTML = CURRICULUM.map((stage, idx) => {
+        const drills = getStageDrills(idx);
+        const masteredCount = drills.filter((_, dIdx) => state.masteredMap[`${idx}-${dIdx}`]).length;
+        const isActive = idx === state.currentStageIdx;
+        const isComplete = masteredCount === drills.length;
 
-            // Show evaluating state
-            document.getElementById('speech-status').innerText = "Coach Jax is analyzing your street phrasing...";
+        return `
+          <button onclick="selectStage(${idx})" class="p-2 rounded-xl border text-left transition flex flex-col justify-between ${
+            isActive
+              ? 'bg-neon/15 border-neon text-white shadow-md'
+              : 'bg-charcoal/90 border-white/10 text-gray-400 hover:border-white/25 hover:text-gray-200'
+          }">
+            <div class="flex items-center justify-between w-full">
+              <span class="text-[11px] font-mono font-black ${isActive ? 'text-neon' : 'text-gray-300'}">${stage.level}</span>
+              ${isComplete ? '<i data-lucide="check-circle-2" class="w-3 h-3 text-neon"></i>' : `<span class="text-[10px] font-mono">${masteredCount}/${drills.length}</span>`}
+            </div>
+            <div class="text-[10px] font-semibold truncate mt-1">${stage.title}</div>
+          </button>
+        `;
+      }).join('');
 
-            try {
-                const response = await callGeminiAI(text);
-                processCoachResponse(response);
-            } catch (err) {
-                console.error(err);
-                // Fallback simulation if API key is invalid or network error
-                processFallbackResponse(text);
-            }
-        }
+      // Update active stage progress bar
+      const activeDrills = getStageDrills(state.currentStageIdx);
+      const activeMastered = activeDrills.filter((_, dIdx) => state.masteredMap[`${state.currentStageIdx}-${dIdx}`]).length;
+      const pct = Math.round((activeMastered / activeDrills.length) * 100);
 
-        async function callGeminiAI(userText) {
-            const stage = curriculum.find(s => s.id === currentStageId);
-            const systemPrompt = `You are Coach Jax, an elite, demanding American street slang and conversational English tutor. The user is at B1 level wanting to reach C1.
-Stage: ${stage.id} - ${stage.title} (${stage.desc})
-Evaluate the user's response strictly. Reject robotic textbook English. Correct mistakes, rate C1 readiness, and give a natural American street alternative.
-Respond strictly in JSON format with keys:
+      document.getElementById('stage-progress-text').textContent = `${activeMastered} / ${activeDrills.length} Mastered`;
+      document.getElementById('stage-progress-bar').style.width = `${pct}%`;
+      document.getElementById('current-cefr-badge').textContent = CURRICULUM[state.currentStageIdx].level;
+      lucide.createIcons();
+    }
+
+    function selectStage(stageIdx) {
+      state.currentStageIdx = stageIdx;
+      state.currentDrillIdx = 0;
+      saveState();
+      renderStageTabs();
+      loadCurrentDrill(state.autoPlay);
+    }
+
+    function loadCurrentDrill(shouldSpeak = false) {
+      const stage = CURRICULUM[state.currentStageIdx];
+      const drills = getStageDrills(state.currentStageIdx);
+      const drill = drills[state.currentDrillIdx];
+
+      document.getElementById('drill-category-tag').textContent = drill.category;
+      document.getElementById('drill-counter').textContent = `${state.currentDrillIdx + 1} / ${drills.length}`;
+      document.getElementById('target-wpm-badge').textContent = `Goal: ~${stage.targetWpm} WPM`;
+
+      // Update sentence text (respecting Blind / Ear Training mode)
+      updateSentenceVisibility();
+
+      document.getElementById('spanish-translation').textContent = `"${drill.spanish}"`;
+      document.getElementById('spanish-translation').style.display = state.showSpanish ? 'block' : 'none';
+
+      document.getElementById('phonetic-guide').textContent = `"${drill.phonetics}"`;
+      document.getElementById('linking-tip').textContent = drill.tip;
+
+      // Reset evaluation panel for fresh attempt
+      document.getElementById('evaluation-panel').classList.add('hidden');
+      document.getElementById('next-drill-btn').classList.add('hidden');
+      document.getElementById('coach-directive').textContent = '"Listen closely to my flow, then repeat it back at full native speed."';
+
+      if (shouldSpeak) {
+        setTimeout(() => speakTargetSentence(1.0), 250);
+      }
+    }
+
+    function advanceToNextDrill() {
+      const drills = getStageDrills(state.currentStageIdx);
+      if (state.currentDrillIdx < drills.length - 1) {
+        state.currentDrillIdx += 1;
+      } else if (state.currentStageIdx < CURRICULUM.length - 1) {
+        state.currentStageIdx += 1;
+        state.currentDrillIdx = 0;
+        showToast(`Stage Unlocked: ${CURRICULUM[state.currentStageIdx].level} — ${CURRICULUM[state.currentStageIdx].title}!`);
+      } else {
+        state.currentDrillIdx = 0;
+        showToast('C1 Mastered! Looping back for speed perfection.');
+      }
+      saveState();
+      renderStageTabs();
+      loadCurrentDrill(state.autoPlay);
+    }
+
+    function skipDrill() {
+      advanceToNextDrill();
+    }
+
+    function prevDrill() {
+      if (state.currentDrillIdx > 0) {
+        state.currentDrillIdx -= 1;
+        saveState();
+        loadCurrentDrill(false);
+      }
+    }
+
+    /**
+     * 9. UI TOGGLES & HELPERS
+     */
+    function toggleSpanishHelper() {
+      state.showSpanish = !state.showSpanish;
+      document.getElementById('lang-toggle-label').textContent = state.showSpanish ? 'ES: ON' : 'ES: OFF';
+      document.getElementById('spanish-translation').style.display = state.showSpanish ? 'block' : 'none';
+      const feedbackEs = document.getElementById('feedback-message-es');
+      if (feedbackEs) feedbackEs.style.display = state.showSpanish ? 'block' : 'none';
+      saveState();
+    }
+
+    function toggleBlindMode() {
+      state.blindMode = !state.blindMode;
+      updateSentenceVisibility();
+    }
+
+    function updateSentenceVisibility() {
+      const drill = getCurrentDrill();
+      const targetEl = document.getElementById('target-sentence');
+      const labelEl = document.getElementById('blind-mode-label');
+      const iconEl = document.getElementById('blind-mode-icon');
+
+      if (state.blindMode) {
+        targetEl.innerHTML = `<span class="text-gray-500 italic text-base sm:text-lg font-mono">[Ear Training Active — Listen & Repeat without reading!]</span>`;
+        labelEl.textContent = 'Show Text';
+        iconEl.setAttribute('data-lucide', 'eye-off');
+      } else {
+        targetEl.textContent = `"${drill.sentence}"`;
+        labelEl.textContent = 'Ear Mode';
+        iconEl.setAttribute('data-lucide', 'eye');
+      }
+      lucide.createIcons();
+    }
+
+    function toggleManualInput() {
+      const box = document.getElementById('manual-input-box');
+      box.classList.toggle('hidden');
+      if (!box.classList.contains('hidden')) {
+        document.getElementById('manual-text-input').focus();
+      }
+    }
+
+    function submitManualInput() {
+      const input = document.getElementById('manual-text-input');
+      const val = input.value.trim();
+      if (!val) return;
+      input.value = '';
+      // Simulate natural speaking duration based on word count (~135 WPM)
+      const wordCount = val.split(/\s+/).length;
+      const simulatedSeconds = Math.max(1.5, (wordCount / 135) * 60 + 0.55);
+      evaluateAttempt(val, simulatedSeconds);
+    }
+
+    function updateHeaderStats() {
+      document.getElementById('xp-count').textContent = state.xp;
+      document.getElementById('streak-count').textContent = state.streak;
+    }
+
+    function openModal(id) {
+      document.getElementById(id).classList.remove('hidden');
+    }
+
+    function closeModal(id) {
+      document.getElementById(id).classList.add('hidden');
+    }
+
+    function saveVoicePreference() {
+      state.voiceURI = document.getElementById('voice-select').value;
+      saveState();
+    }
+
+    function saveSettings() {
+      state.autoPlay = document.getElementById('autoplay-toggle').checked;
+      state.strictness = document.getElementById('strictness-select').value;
+      state.apiKey = document.getElementById('gemini-api-key').value.trim();
+      state.customTopic = document.getElementById('custom-topic-input').value.trim();
+      state.voiceURI = document.getElementById('voice-select').value;
+
+      if (state.apiKey) {
+        document.getElementById('ai-active-dot').classList.remove('hidden');
+      } else {
+        document.getElementById('ai-active-dot').classList.add('hidden');
+      }
+      saveState();
+    }
+
+    function resetProgress() {
+      state.masteredMap = {};
+      state.xp = 0;
+      state.streak = 0;
+      state.currentStageIdx = 0;
+      state.currentDrillIdx = 0;
+      saveState();
+      renderStageTabs();
+      loadCurrentDrill(false);
+      updateHeaderStats();
+      closeModal('settings-modal');
+      showToast('Progress & XP reset.');
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      document.getElementById('toast-msg').textContent = msg;
+      toast.classList.remove('hidden');
+      clearTimeout(window._toastTimer);
+      window._toastTimer = setTimeout(() => {
+        toast.classList.add('hidden');
+      }, 3200);
+    }
+
+    /**
+     * 10. OPTIONAL GEMINI AI DYNAMIC DRILL GENERATOR
+     */
+    async function handleGenerateAIDrill() {
+      if (!state.apiKey) {
+        openModal('settings-modal');
+        showToast('Add a free Gemini API key in Settings to generate infinite custom drills!');
+        return;
+      }
+
+      const btn = document.getElementById('ai-gen-btn');
+      const originalHTML = btn.innerHTML;
+      btn.disabled = true;
+      btn.innerHTML = `<i data-lucide="loader-2" class="w-3.5 h-3.5 animate-spin"></i> <span>Generating...</span>`;
+      lucide.createIcons();
+
+      const stage = CURRICULUM[state.currentStageIdx];
+      const topicClause = state.customTopic
+        ? `about the topic: "${state.customTopic}"`
+        : `fitting the theme "${stage.title} (${stage.subtitle})"`;
+
+      const prompt = `Generate 1 natural, complete everyday American street English conversational sentence at CEFR level ${stage.level} ${topicClause}.
+Return ONLY valid JSON with these exact keys:
 {
-  "critique": "short rigorous critique of their sentence",
-  "score": "B1" | "B2" | "C1",
-  "suggestion": "how a native speaker on the US streets would actually say it",
-  "nextPrompt": "your next challenging question to keep the conversation going in this stage"
+  "category": "2-word tag",
+  "sentence": "Complete natural multi-clause American sentence with authentic slang/idioms",
+  "spanish": "Natural Latin American Spanish translation",
+  "phonetics": "Phonetic street reduction spelling showing how Americans actually link/reduce the words",
+  "tip": "1 short coaching tip explaining the reductions, linking, or slang"
 }`;
 
-            const payload = {
-                contents: [
-                    { role: "user", parts: [{ text: `System Instruction: ${systemPrompt}\n\nUser Input: ${userText}` }] }
-                ],
-                generationConfig: {
-                    responseMimeType: "application/json"
-                }
-            };
+      try {
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${encodeURIComponent(state.apiKey)}`;
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: prompt }] }],
+            generationConfig: { responseMimeType: "application/json" }
+          })
+        });
 
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
-            const res = await fetch(url, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
+        if (!response.ok) throw new Error(`API HTTP ${response.status}`);
+        const data = await response.json();
+        const rawText = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+        const newDrill = JSON.parse(rawText);
 
-            const data = await res.json();
-            const jsonText = data.candidates[0].content.parts[0].text;
-            return JSON.parse(jsonText);
+        if (!newDrill.sentence || !newDrill.phonetics) throw new Error('Invalid AI format');
+
+        if (!state.aiGeneratedDrills[state.currentStageIdx]) {
+          state.aiGeneratedDrills[state.currentStageIdx] = [];
         }
+        state.aiGeneratedDrills[state.currentStageIdx].push(newDrill);
+        state.currentDrillIdx = getStageDrills(state.currentStageIdx).length - 1;
 
-        function processCoachResponse(res) {
-            // Display Feedback Box
-            const feedbackCard = document.getElementById('feedback-card');
-            feedbackCard.classList.remove('hidden');
-            document.getElementById('critique').innerText = res.critique;
-            document.getElementById('feedback-critique').innerText = res.critique;
-            document.getElementById('score-badge').innerText = `Grade: ${res.score}`;
-            document.getElementById('feedback-suggestion').innerText = res.suggestion;
-
-            // Append AI next prompt
-            appendChatMessage('AI', res.nextPrompt);
-            speakText(res.nextPrompt);
-
-            // Progress turns
-            const stage = curriculum.find(s => s.id === currentStageId);
-            currentTurn++;
-            if (currentTurn > stage.goalTurns) {
-                if (currentStageId < curriculum.length) {
-                    currentStageId++;
-                    currentTurn = 1;
-                    showNotification(`Stage Completed! Unlocking Stage ${currentStageId}`);
-                } else {
-                    showNotification("Incredible! You've mastered all stages to C1 fluency!");
-                }
-            }
-            updateHeader();
-            renderStagePills();
-            document.getElementById('speech-status').innerText = "Mic Ready. Tap mic or type.";
-        }
-
-        function processFallbackResponse(text) {
-            // Smart local fallback if no API key is set
-            const feedbackCard = document.getElementById('feedback-card');
-            feedbackCard.classList.remove('hidden');
-            
-            let critique = "A bit too textbook and formal. Real speakers in NYC or LA keep it punchier.";
-            let suggestion = "Try using contractions and natural fillers like 'Honestly', 'Pretty much', or 'You know'.";
-            let score = "B2";
-            let nextPrompt = "Alright, I see what you mean. Now tell me: what's your go-to move when things get hectic during your day?";
-
-            if (currentStageId === 1) {
-                suggestion = "Instead of 'Hello, how are you?', drop a 'What's good?' or 'Yo, what's happening?'";
-                nextPrompt = "Good energy! Now imagine you're running late to meet a friend. How do you text them you're on your way?";
-            } else if (currentStageId === 2) {
-                suggestion = "Instead of 'I am employed as an office worker', say 'I'm grinding out 9-to-5 desk work' or 'I'm on the corporate grind'.";
-                nextPrompt = "Gotcha. Do you side-hustle or just stick to the main gig?";
-            }
-
-            document.getElementById('feedback-critique').innerText = critique;
-            document.getElementById('score-badge').innerText = `Grade: ${score}`;
-            document.getElementById('feedback-suggestion').innerText = suggestion;
-
-            appendChatMessage('AI', nextPrompt);
-            speakText(nextPrompt);
-
-            currentTurn++;
-            const stage = curriculum.find(s => s.id === currentStageId);
-            if (currentTurn > stage.goalTurns && currentStageId < curriculum.length) {
-                currentStageId++;
-                currentTurn = 1;
-                showNotification(`Stage Completed! Unlocking Stage ${currentStageId}`);
-            }
-            updateHeader();
-            renderStagePills();
-            document.getElementById('speech-status').innerText = "Mic Ready. Tap mic or type. (Tip: Add Gemini API key for dynamic AI)";
-        }
-
-        function showNotification(msg) {
-            const div = document.createElement('div');
-            div.className = 'fixed top-20 left-1/2 -translate-x-1/2 bg-neon-green text-black font-bold text-xs px-4 py-2 rounded-xl shadow-xl z-50 animate-bounce';
-            div.innerText = msg;
-            document.body.appendChild(div);
-            setTimeout(() => div.remove(), 3500);
-        }
-
-        function escapeHtml(string) {
-            return String(string).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-        }
-    </script>
+        saveState();
+        renderStageTabs();
+        loadCurrentDrill(true);
+        showToast('New AI Street Drill generated!');
+      } catch (err) {
+        console.error(err);
+        showToast('Could not generate AI drill. Check your API key in Settings.');
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = originalHTML;
+        lucide.createIcons();
+      }
+    }
+  </script>
 </body>
 </html>
