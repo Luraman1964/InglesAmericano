@@ -20,3 +20,10 @@
 - La compatibilidad de `SpeechRecognition` varía por navegador y puede usar servicios remotos del navegador. El modo de voz no está garantizado offline. La voz disponible depende de las voces instaladas en el sistema.
 - La conversación actual es guiada y basada en preguntas/reglas locales; no es un agente generativo de IA en tiempo real. Para una conversación libre con corrección fonética avanzada se requiere integrar un backend/API de voz, con clave protegida en servidor.
 - Las transcripciones fonéticas de los documentos se conservan como material orientativo. Algunas formas son muy informales, regionales o dependientes del contexto; no todas deben usarse en entornos profesionales.
+
+
+MEJORA PLUS DE AUDIO:
+- Tres velocidades seleccionables: Natural 1.0x, Lenta 0.72x y Muy lenta 0.48x.
+- Las tres velocidades mantienen la misma voz en-US y la misma frase.
+- Puedes elegir entre las voces English (United States) disponibles en tu navegador/sistema.
+- La calidad y naturalidad dependen de las voces instaladas en Windows/macOS/Android y del navegador; no se descarga una voz humana propietaria.

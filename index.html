@@ -9,6 +9,18 @@
 :root{--bg:#09111f;--panel:#111d30;--panel2:#16243a;--line:#263954;--text:#edf4ff;--muted:#9fb0c8;--mint:#62e6bb;--blue:#7ca8ff;--gold:#ffd479;--red:#ff8791}
 *{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 80% -10%,#1b3b54 0,transparent 45%),var(--bg);color:var(--text);font:15px/1.5 Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,sans-serif}button,select,input{font:inherit}button{cursor:pointer;border:0}.wrap{max-width:1100px;margin:auto;padding:18px 18px 50px}.top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:8px 0 20px}.brand{display:flex;align-items:center;gap:12px}.logo{width:44px;height:44px;border-radius:14px;background:linear-gradient(145deg,#6cf0c5,#3489bc);display:grid;place-items:center;color:#061624;font-weight:900;font-size:19px;box-shadow:0 8px 30px #48d7b433}.brand h1{font-size:18px;margin:0;letter-spacing:-.4px}.brand p{margin:1px 0 0;color:var(--muted);font-size:12px}.stats{display:flex;gap:8px}.stat{background:#122036;border:1px solid var(--line);border-radius:12px;padding:8px 11px;font-size:12px;color:var(--muted)}.stat b{color:var(--mint);font-size:15px;margin-left:5px}.hero{padding:24px;border:1px solid #31506a;border-radius:22px;background:linear-gradient(125deg,#152b40,#111c30 70%);display:flex;justify-content:space-between;gap:18px;align-items:center;margin-bottom:18px}.eyebrow{color:var(--mint);text-transform:uppercase;letter-spacing:1.8px;font-size:10px;font-weight:800}.hero h2{font-size:clamp(24px,4vw,34px);line-height:1.12;margin:8px 0}.hero p{color:#b4c5d9;margin:0;max-width:620px}.coach{font-size:42px;flex-shrink:0}.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0}.tab,.secondary,.primary,.quiet{border-radius:12px;padding:11px 15px;font-weight:700;transition:.18s}.tab{background:#132239;color:#b8c8dd;border:1px solid var(--line)}.tab.active{background:#183e43;border-color:#3c9f87;color:#a9ffe2}.primary{background:var(--mint);color:#06221d;box-shadow:0 7px 22px #48ddb329}.primary:hover{filter:brightness(1.06);transform:translateY(-1px)}.secondary{background:#20334d;color:#eaf3ff;border:1px solid #38516e}.quiet{background:transparent;color:var(--muted);border:1px solid var(--line)}button:disabled{opacity:.45;cursor:not-allowed;transform:none!important}.grid{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(260px,.8fr);gap:16px}.card{background:linear-gradient(160deg,#142239,#101b2d);border:1px solid var(--line);border-radius:20px;padding:20px;min-width:0}.card h3{margin:0 0 5px;font-size:16px}.sub{color:var(--muted);font-size:12px;margin:0 0 16px}.phrase{font-size:clamp(24px,4vw,36px);font-weight:800;line-height:1.25;letter-spacing:-.7px;margin:18px 0 12px}.meaning{color:#bdcbe0;margin:0 0 16px}.chips{display:flex;gap:7px;flex-wrap:wrap}.chip{font-size:11px;color:#a9c2df;border:1px solid #304964;background:#182a42;border-radius:99px;padding:5px 9px}.phonetic{margin:14px 0;padding:12px 14px;background:#0c1728;border:1px dashed #35506c;border-radius:12px;color:#b9d2f4;font-family:ui-monospace,monospace;font-size:13px}.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:16px}.actions button{flex:1;min-width:130px}.micbox{margin-top:18px;padding:17px;border-radius:16px;background:#0b1728;border:1px solid #263d57;text-align:center}.micstate{color:var(--muted);font-size:13px;min-height:22px}.mic{width:76px;height:76px;border-radius:50%;background:linear-gradient(145deg,#65efc3,#34a98f);color:#06251d;font-size:28px;margin:12px auto;display:grid;place-items:center;box-shadow:0 0 0 8px #62e6bb15}.mic.listening{animation:pulse 1.3s infinite;background:#ff8e99;color:#351016}@keyframes pulse{50%{box-shadow:0 0 0 17px #ff8e9914}}.count{font-size:32px;font-weight:900;color:var(--gold);min-height:40px}.transcript{background:#101f33;border-radius:12px;padding:12px;margin-top:12px;text-align:left;color:#e7f1ff;min-height:45px;overflow-wrap:anywhere}.feedback{margin-top:12px;padding:13px;border-radius:13px;background:#142a35;border:1px solid #28564f;display:none}.feedback.show{display:block}.feedback strong{color:var(--mint)}.feedback.bad{background:#30202a;border-color:#633d4a}.feedback.bad strong{color:#ffabb1}.score{font-size:26px;font-weight:900;color:var(--mint)}.side-list{display:grid;gap:10px}.metric{display:flex;justify-content:space-between;gap:8px;padding:11px 0;border-bottom:1px solid #263750;color:var(--muted);font-size:13px}.metric b{color:var(--text)}.progress{height:7px;background:#263750;border-radius:9px;overflow:hidden;margin:10px 0}.progress span{display:block;height:100%;width:0;background:linear-gradient(90deg,#42bb9d,#8df0ca);transition:.3s}.list{display:grid;gap:8px;max-height:430px;overflow:auto}.item{padding:11px 12px;text-align:left;border-radius:12px;background:#101e31;border:1px solid #263b55;color:#e4efff}.item small{display:block;color:var(--muted);font-size:11px}.item.current{border-color:var(--mint);background:#153039}.conversation{display:grid;gap:12px}.bubble{padding:15px;border-radius:16px;max-width:90%;background:#1b2d46;border:1px solid #314963}.bubble.coach{border-top-left-radius:4px}.bubble.you{margin-left:auto;background:#173b39;border-color:#2c7666;border-top-right-radius:4px}.bubble small{display:block;color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px}.question{font-size:23px;font-weight:800}.answerhint{color:#9fb9d3;font-size:13px;margin-top:8px}.field{display:flex;gap:8px;flex-wrap:wrap}.field input,.field select{background:#0b1728;border:1px solid #304762;border-radius:11px;padding:11px 12px;color:var(--text);min-width:0}.field input{flex:1}.note{font-size:11px;color:var(--muted);line-height:1.55}.hide{display:none!important}.footer{text-align:center;color:#6f829e;font-size:11px;margin-top:20px}.settings{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.settings label{font-size:12px;color:var(--muted)}.settings select{margin-left:6px;background:#0b1728;color:var(--text);border:1px solid var(--line);border-radius:9px;padding:7px}
 @media(max-width:780px){.grid{grid-template-columns:1fr}.hero{padding:19px}.coach{font-size:32px}.stats .stat:nth-child(2){display:none}.wrap{padding:12px 12px 35px}.card{padding:16px}}
+
+.speed-panel{margin:18px 0 20px;padding:17px;border:1px solid #29445b;border-radius:18px;background:linear-gradient(145deg,#102337,#0c1b2a)}
+.speed-heading{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:13px}
+.speed-heading b{font-size:14px}.speed-heading span,.speed-help{font-size:12px;color:#9bb2c5}
+.speed-controls{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}
+.speed-btn{border:1px solid #38516a;background:#142b40;color:#dceaf4;border-radius:13px;padding:12px 7px;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;transition:.18s}
+.speed-btn strong{font-size:20px;color:#fff}.speed-btn span{font-weight:700;font-size:13px}.speed-btn small{font-size:11px;color:#9bb2c5}
+.speed-btn.active{border-color:#35d2bc;background:#123d46;box-shadow:0 0 0 2px #35d2bc25}
+.voice-row{display:flex;align-items:center;gap:9px;margin-top:13px;flex-wrap:wrap}
+.voice-row label{font-size:12px;color:#a9bfd0}.voice-row select{flex:1;min-width:180px;background:#0a1825;color:#e9f2f8;border:1px solid #38516a;border-radius:9px;padding:10px}
+.speed-help{margin:10px 0 0}
+@media(max-width:560px){.speed-heading{align-items:flex-start;flex-direction:column}.speed-controls{gap:6px}.speed-btn{padding:10px 4px}.speed-btn strong{font-size:17px}.speed-btn span{font-size:12px}.voice-row{align-items:stretch}.voice-row select{min-width:100%}}
 </style>
 </head>
 <body>
@@ -33,7 +45,16 @@
    <div class="phrase" id="target">Whaddya do for work?</div>
    <p class="meaning" id="meaning">¿A qué te dedicas?</p>
    <div class="phonetic" id="phonetic">🎯 Enfócate en el ritmo y en unir las palabras. No pronuncies cada palabra por separado.</div>
-   <div class="actions"><button class="primary" id="listen">▶ Escuchar modelo americano</button><button class="secondary" id="slowListen">🐢 Escuchar despacio</button></div>
+   <div class="speed-panel">
+    <div class="speed-heading"><b>🎧 Velocidad de pronunciación</b><span id="voiceStatus">Voz estadounidense · en-US</span></div>
+    <div class="speed-controls" role="group" aria-label="Velocidad de pronunciación">
+     <button class="speed-btn active" data-rate="1" aria-pressed="true"><strong>1×</strong><span>Natural</span><small>Ritmo real</small></button>
+     <button class="speed-btn" data-rate="0.72" aria-pressed="false"><strong>0.72×</strong><span>Lenta</span><small>Para imitar</small></button>
+     <button class="speed-btn" data-rate="0.48" aria-pressed="false"><strong>0.48×</strong><span>Muy lenta</span><small>Por segmentos</small></button>
+    </div>
+    <div class="voice-row"><label for="voiceSelect">Voz americana disponible:</label><select id="voiceSelect"><option value="">Seleccionando voz en-US…</option></select><button class="primary" id="listen">▶ Reproducir</button></div>
+    <p class="speed-help">Las tres velocidades usan la misma voz y la misma frase; solo cambia la velocidad de reproducción.</p>
+   </div>
    <div class="micbox">
     <div class="micstate" id="micState">Pulsa «Empezar» y prepárate para hablar.</div>
     <div class="count" id="countdown"></div>
@@ -52,7 +73,7 @@
    <div class="metric"><span>Precisión de transcripción</span><b id="sessionAccuracy">—</b></div>
    <div class="progress"><span id="sessionBar"></span></div>
    <p class="note">Meta: 5 frases por sesión. Repite cada una tres veces. Si la transcripción falla, escucha el modelo, relaja la mandíbula y vuelve a intentarlo.</p>
-   <div class="settings"><label>Repeticiones <select id="repeatGoal"><option>2</option><option selected>3</option><option>5</option><option>10</option></select></label><label>Velocidad <select id="speed"><option value=".82">Lenta</option><option value="1" selected>Natural</option><option value="1.08">Rápida</option></select></label></div>
+   <div class="settings"><label>Repeticiones <select id="repeatGoal"><option>2</option><option selected>3</option><option>5</option><option>10</option></select></label></div>
    <div style="margin-top:18px"><h3>Consejo del coach</h3><p class="note" id="tip">No busques pronunciar palabra por palabra. Copia el ritmo, las palabras fuertes y las reducciones naturales.</p></div>
   </aside>
  </div>
@@ -107,8 +128,38 @@ function renderStats(){ $("xp").textContent=state.xp;$("streak").textContent=sta
 function current(){return PHRASES[index%PHRASES.length]}
 function renderPhrase(){let p=current();$("target").textContent=p.phrase;$("meaning").textContent=p.meaning||"Practica la frase como una sola unidad de sonido.";$("category").textContent=p.category||"Connected speech";$("repCount").textContent=`Repetición ${repetition} de ${$("repeatGoal").value}`;$("phonetic").textContent=p.ipa?`Guía fonética del documento: /${p.ipa}/ · Úsala como orientación, no como transcripción fonética certificada.`:"🎯 Copia el ritmo y la unión de palabras del audio modelo.";$("feedback").className="feedback";$("transcript").textContent="Tu transcripción aparecerá aquí.";$("tip").textContent=tipFor(p.phrase)}
 function tipFor(s){if(/whaddya/i.test(s))return"WHADDYA funciona como un bloque hablado. No separes “what / do / you”.";if(/wanna/i.test(s))return"WANNA suele sonar como una unidad átona y rápida; mantén el acento en la palabra importante.";if(/water|better|little/i.test(s))return"En muchos acentos estadounidenses, la T intervocálica se realiza como un golpe rápido parecido a una D suave.";if(/gonna|gotta/i.test(s))return"GONNA y GOTTA son reducciones informales comunes. Úsalas en contextos casuales.";return"Imita primero el ritmo completo. Las palabras de contenido llevan más energía; las palabras funcionales suelen reducirse."}
-function chooseVoice(){let voices=speechSynthesis.getVoices();return voices.find(v=>v.lang==="en-US"&&/Google US English|Samantha|Jenny|Aria|Guy/i.test(v.name))||voices.find(v=>v.lang==="en-US")||voices.find(v=>v.lang.startsWith("en"))}
-function speak(text,rate=1){if(!("speechSynthesis"in window)){alert("Este navegador no ofrece síntesis de voz.");return}speechSynthesis.cancel();let u=new SpeechSynthesisUtterance(text);u.lang="en-US";u.rate=rate;u.pitch=1.02;let v=chooseVoice();if(v)u.voice=v;speechSynthesis.speak(u)}
+let selectedVoiceURI="";
+let selectedRate=1;
+function availableUSVoices(){return ("speechSynthesis"in window)?speechSynthesis.getVoices().filter(v=>/^en-US$/i.test(v.lang)||/^en_US$/i.test(v.lang)):[]}
+function chooseVoice(){
+ let voices=availableUSVoices();
+ if(selectedVoiceURI){let chosen=voices.find(v=>v.voiceURI===selectedVoiceURI);if(chosen)return chosen}
+ const preferred=/Google US English|Microsoft (Aria|Jenny|Guy|Ana|Christopher|Zira|David)|Samantha|Ava|Allison|Joanna|Matthew/i;
+ return voices.find(v=>preferred.test(v.name))||voices.find(v=>!v.default)||voices[0]||null;
+}
+function populateVoices(){
+ if(!("speechSynthesis"in window)){$("voiceStatus").textContent="Síntesis de voz no disponible";return}
+ const voices=availableUSVoices(),select=$("voiceSelect");
+ const previous=selectedVoiceURI||select.value;
+ select.innerHTML="";
+ if(!voices.length){select.innerHTML='<option value="">No hay voz en-US instalada</option>';$("voiceStatus").textContent="Instala una voz English (United States) en tu sistema";return}
+ voices.forEach(v=>{let o=document.createElement("option");o.value=v.voiceURI;o.textContent=`${v.name} · ${v.lang}${v.default?" · predeterminada":""}`;select.appendChild(o)});
+ let best=voices.find(v=>/Google US English|Microsoft (Aria|Jenny|Guy|Ana|Christopher)|Samantha|Ava|Allison|Joanna|Matthew/i.test(v.name))||voices[0];
+ selectedVoiceURI=voices.some(v=>v.voiceURI===previous)?previous:best.voiceURI;
+ select.value=selectedVoiceURI;
+ const active=voices.find(v=>v.voiceURI===selectedVoiceURI);
+ $("voiceStatus").textContent=active?`${active.name} · ${active.lang}`:"Voz estadounidense · en-US";
+}
+function speak(text,rate=selectedRate){
+ if(!("speechSynthesis"in window)){alert("Este navegador no ofrece síntesis de voz.");return}
+ speechSynthesis.cancel();
+ const u=new SpeechSynthesisUtterance(text);u.lang="en-US";u.rate=rate;u.pitch=1.0;u.volume=1;
+ const v=chooseVoice();if(v){u.voice=v;u.lang=v.lang}
+ u.onerror=e=>{$("voiceStatus").textContent="No se pudo reproducir: "+(e.error||"error de voz")};
+ u.onstart=()=>{$("listen").textContent="⏸ Reproduciendo…"};
+ u.onend=()=>{$("listen").textContent="▶ Reproducir";};
+ speechSynthesis.speak(u);
+}
 function similarity(a,b){let A=clean(a).split(" "),B=clean(b).split(" ");if(!A.length)return 0;let dp=Array.from({length:A.length+1},()=>Array(B.length+1).fill(0));for(let i=0;i<=A.length;i++)dp[i][0]=i;for(let j=0;j<=B.length;j++)dp[0][j]=j;for(let i=1;i<=A.length;i++)for(let j=1;j<=B.length;j++)dp[i][j]=Math.min(dp[i-1][j]+1,dp[i][j-1]+1,dp[i-1][j-1]+(A[i-1]===B[j-1]?0:1));return Math.max(0,Math.round((1-dp[A.length][B.length]/Math.max(A.length,B.length))*100))}
 function getRecognition(){let SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR)return null;let r=new SR();r.lang="en-US";r.continuous=false;r.interimResults=true;r.maxAlternatives=3;return r}
 function stopTimers(){clearInterval(countdownTimer);clearTimeout(silenceTimer)}
@@ -125,8 +176,12 @@ function handleError(err,mode){stopTimers();$("startBtn").disabled=false;$("stop
 function gradeRepeat(spoken){let p=current(),score=similarity(p.phrase,spoken);lastScore=score;state.reps++;state.accuracy.push(score);if(state.accuracy.length>100)state.accuracy.shift();$("transcript").textContent="Tú dijiste: "+spoken;$("micState").textContent=score>=85?"¡Muy bien! Sigue con la siguiente repetición.":score>=65?"Buen intento. Ajustemos las palabras que faltaron.":"Vamos a trabajarla otra vez. Escucha el modelo y reduce las pausas.";let box=$("feedback");box.className="feedback show "+(score<65?"bad":"");box.innerHTML=`<div class="score">${score}%</div><strong>${score>=85?"Excelente coincidencia de texto":score>=65?"Vas por buen camino":"Necesitamos otra vuelta"}</strong><p>${feedbackText(p.phrase,spoken)}</p><p><b>Modelo:</b> ${p.phrase}</p><p><b>Tu reconocimiento:</b> ${spoken}</p>`;save();$("repCount").textContent=`Repetición ${repetition} de ${$("repeatGoal").value}`;if(score>=85){state.xp+=10;state.streak++;repetition++;if(repetition>Number($("repeatGoal").value)){if(!state.mastered.includes(p.id))state.mastered.push(p.id);state.done++;state.session++;state.xp+=15;repetition=1;save();$("micState").textContent="¡Frase completada! Ya puedes avanzar.";}}else{state.streak=0;save()}}
 function feedbackText(target,spoken){let t=clean(target).split(" "),s=clean(spoken).split(" "),missing=t.filter(w=>!s.includes(w));return missing.length?`Palabras que no aparecieron en la transcripción: ${missing.join(", ")}. Prueba a unir la frase y marcar las palabras importantes.`:"La transcripción coincide bastante. Ahora concéntrate en el ritmo, la entonación y la relajación de la boca."}
 function stopListen(){stopTimers();if(recognition){try{recognition.stop()}catch(e){}}}
-$("listen").onclick=()=>speak(current().phrase,Number($("speed").value));$("slowListen").onclick=()=>speak(current().phrase,.78);$("startBtn").onclick=()=>startListen("repeat");$("micButton").onclick=()=>startListen("repeat");$("stopBtn").onclick=stopListen;
-$("again").onclick=()=>{repetition=1;renderPhrase();speak(current().phrase,.9)};$("next").onclick=()=>{index=(index+1)%PHRASES.length;repetition=1;renderPhrase();};
+document.querySelectorAll(".speed-btn").forEach(btn=>btn.onclick=()=>{selectedRate=Number(btn.dataset.rate);document.querySelectorAll(".speed-btn").forEach(b=>{let active=b===btn;b.classList.toggle("active",active);b.setAttribute("aria-pressed",String(active))});speak(current().phrase,selectedRate)});
+$("listen").onclick=()=>speak(current().phrase,selectedRate);
+$("voiceSelect").onchange=e=>{selectedVoiceURI=e.target.value;const v=availableUSVoices().find(x=>x.voiceURI===selectedVoiceURI);$("voiceStatus").textContent=v?`${v.name} · ${v.lang}`:"Voz estadounidense · en-US"};
+if("speechSynthesis"in window){populateVoices();speechSynthesis.onvoiceschanged=populateVoices;}
+$("startBtn").onclick=()=>startListen("repeat");$("micButton").onclick=()=>startListen("repeat");$("stopBtn").onclick=stopListen;
+$("again").onclick=()=>{repetition=1;renderPhrase();speak(current().phrase,selectedRate)};$("next").onclick=()=>{index=(index+1)%PHRASES.length;repetition=1;renderPhrase();};
 document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>{document.querySelectorAll(".tab").forEach(x=>x.classList.toggle("active",x===b));document.querySelectorAll(".page").forEach(x=>x.classList.toggle("hide",x.id!==b.dataset.tab));if(b.dataset.tab==="library")renderLibrary()});
 function renderLibrary(){let q=clean($("search").value),src=$("sourceFilter").value;let rows=PHRASES.filter(p=>(src==="all"||p.source===src)&&(!q||clean(p.phrase+" "+p.meaning+" "+p.category).includes(q)));$("phraseList").innerHTML=rows.map(p=>`<button class="item" data-id="${p.id}">${p.phrase}<small>${p.meaning||p.category} · ${p.source}</small></button>`).join("")||"<p class='note'>No se encontraron frases.</p>";document.querySelectorAll(".item").forEach(b=>b.onclick=()=>{index=Number(b.dataset.id)-1;repetition=1;renderPhrase();document.querySelector('[data-tab="repeat"]').click()})}
 $("search").oninput=renderLibrary;$("sourceFilter").onchange=renderLibrary;
